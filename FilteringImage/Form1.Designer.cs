@@ -260,7 +260,7 @@
             "3 x 3",
             "5 x 5",
             "9 x 9"});
-      this.cboxMaskSize.Location = new System.Drawing.Point(106, 34);
+      this.cboxMaskSize.Location = new System.Drawing.Point(106, 38);
       this.cboxMaskSize.Name = "cboxMaskSize";
       this.cboxMaskSize.Size = new System.Drawing.Size(91, 21);
       this.cboxMaskSize.TabIndex = 9;
@@ -269,7 +269,7 @@
       // 
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.label1.Location = new System.Drawing.Point(20, 34);
+      this.label1.Location = new System.Drawing.Point(20, 38);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(71, 16);
       this.label1.TabIndex = 8;
@@ -278,7 +278,7 @@
       // btnFilterMidpoint
       // 
       this.btnFilterMidpoint.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnFilterMidpoint.Location = new System.Drawing.Point(24, 166);
+      this.btnFilterMidpoint.Location = new System.Drawing.Point(24, 162);
       this.btnFilterMidpoint.Name = "btnFilterMidpoint";
       this.btnFilterMidpoint.Size = new System.Drawing.Size(173, 40);
       this.btnFilterMidpoint.TabIndex = 7;
@@ -289,7 +289,7 @@
       // btnFilterCounterHarmonic
       // 
       this.btnFilterCounterHarmonic.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnFilterCounterHarmonic.Location = new System.Drawing.Point(24, 111);
+      this.btnFilterCounterHarmonic.Location = new System.Drawing.Point(24, 107);
       this.btnFilterCounterHarmonic.Name = "btnFilterCounterHarmonic";
       this.btnFilterCounterHarmonic.Size = new System.Drawing.Size(173, 40);
       this.btnFilterCounterHarmonic.TabIndex = 6;
@@ -330,10 +330,10 @@
       // btnResetImage
       // 
       this.btnResetImage.Enabled = false;
-      this.btnResetImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnResetImage.Location = new System.Drawing.Point(613, 75);
+      this.btnResetImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.btnResetImage.Location = new System.Drawing.Point(602, 75);
       this.btnResetImage.Name = "btnResetImage";
-      this.btnResetImage.Size = new System.Drawing.Size(100, 30);
+      this.btnResetImage.Size = new System.Drawing.Size(123, 30);
       this.btnResetImage.TabIndex = 11;
       this.btnResetImage.Text = "Reset Image";
       this.btnResetImage.UseVisualStyleBackColor = true;
