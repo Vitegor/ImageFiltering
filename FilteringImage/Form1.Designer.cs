@@ -45,7 +45,6 @@
       this.btnAddNoiseUnipolarSalt = new System.Windows.Forms.Button();
       this.grboxFiltering = new System.Windows.Forms.GroupBox();
       this.label4 = new System.Windows.Forms.Label();
-      this.txbCounterHarmonicFilterGrade = new System.Windows.Forms.TextBox();
       this.cboxMaskSize = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
       this.btnFilterMidpoint = new System.Windows.Forms.Button();
@@ -57,6 +56,7 @@
       this.panel3 = new System.Windows.Forms.Panel();
       this.panel4 = new System.Windows.Forms.Panel();
       this.panel5 = new System.Windows.Forms.Panel();
+      this.cboxCounterHarmonicFilterGrade = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       this.grboxColorChannel.SuspendLayout();
       this.grboxNoise.SuspendLayout();
@@ -229,8 +229,8 @@
       // 
       // grboxFiltering
       // 
+      this.grboxFiltering.Controls.Add(this.cboxCounterHarmonicFilterGrade);
       this.grboxFiltering.Controls.Add(this.label4);
-      this.grboxFiltering.Controls.Add(this.txbCounterHarmonicFilterGrade);
       this.grboxFiltering.Controls.Add(this.cboxMaskSize);
       this.grboxFiltering.Controls.Add(this.label1);
       this.grboxFiltering.Controls.Add(this.btnFilterMidpoint);
@@ -252,14 +252,6 @@
       this.label4.Size = new System.Drawing.Size(79, 16);
       this.label4.TabIndex = 11;
       this.label4.Text = "Filter grade:";
-      // 
-      // txbCounterHarmonicFilterGrade
-      // 
-      this.txbCounterHarmonicFilterGrade.Location = new System.Drawing.Point(112, 85);
-      this.txbCounterHarmonicFilterGrade.Name = "txbCounterHarmonicFilterGrade";
-      this.txbCounterHarmonicFilterGrade.Size = new System.Drawing.Size(52, 20);
-      this.txbCounterHarmonicFilterGrade.TabIndex = 10;
-      this.txbCounterHarmonicFilterGrade.Text = "1";
       // 
       // cboxMaskSize
       // 
@@ -371,6 +363,18 @@
       this.panel5.Size = new System.Drawing.Size(15, 15);
       this.panel5.TabIndex = 14;
       // 
+      // cboxCounterHarmonicFilterGrade
+      // 
+      this.cboxCounterHarmonicFilterGrade.FormattingEnabled = true;
+      this.cboxCounterHarmonicFilterGrade.Items.AddRange(new object[] {
+            "-1",
+            "0",
+            "1"});
+      this.cboxCounterHarmonicFilterGrade.Location = new System.Drawing.Point(106, 83);
+      this.cboxCounterHarmonicFilterGrade.Name = "cboxCounterHarmonicFilterGrade";
+      this.cboxCounterHarmonicFilterGrade.Size = new System.Drawing.Size(91, 21);
+      this.cboxCounterHarmonicFilterGrade.TabIndex = 12;
+      // 
       // formMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,13 +430,13 @@
     private System.Windows.Forms.CheckBox chboxChannelGreen;
     private System.Windows.Forms.Button btnResetImage;
     private System.Windows.Forms.Button btnAddNoiseUnipolarPepper;
-    private System.Windows.Forms.TextBox txbCounterHarmonicFilterGrade;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Panel panel2;
     private System.Windows.Forms.Panel panel5;
     private System.Windows.Forms.Panel panel4;
     private System.Windows.Forms.Panel panel3;
+    private System.Windows.Forms.ComboBox cboxCounterHarmonicFilterGrade;
   }
 }
 

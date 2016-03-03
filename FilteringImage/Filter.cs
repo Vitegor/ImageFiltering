@@ -10,8 +10,9 @@ namespace FilteringImage
   public static class Filter
   {
     private static byte[] maskGrades = new byte[] { 3, 5, 9 };
+    private static double[] harmonicFilterGrade = new double[] { -1, 0, 1 };
 
-    public static Bitmap FilterCounterHarmonic(Bitmap bitmap, byte maskGradeIndex, double filterGrade = 1)
+    public static Bitmap FilterCounterHarmonic(Bitmap bitmap, byte maskGradeIndex, byte harmonicFilterGradeIndex)
     {
       if(maskGrades.Length >= maskGradeIndex)
       {
@@ -24,6 +25,7 @@ namespace FilteringImage
         byte r, g, b;
 
         byte maskGrade = maskGrades[maskGradeIndex];
+        double filterGrade = harmonicFilterGrade[harmonicFilterGradeIndex];
         int maskArea = maskGrade - 2;
         int maskAreaMin = maskArea * (-1);
 
@@ -42,13 +44,17 @@ namespace FilteringImage
               {
                 if(isMaskPointInImageArea(x, y, i, j, height, width, maskGrade))
                 {
-                  sNumR += Math.Pow(bitmap.GetPixel(x + i, y + j).R, filterGrade + 1);
-                  sNumG += Math.Pow(bitmap.GetPixel(x + i, y + j).G, filterGrade + 1);
-                  sNumB += Math.Pow(bitmap.GetPixel(x + i, y + j).B, filterGrade + 1);
+                  r = bitmap.GetPixel(x + i, y + j).R;
+                  g = bitmap.GetPixel(x + i, y + j).G;
+                  b = bitmap.GetPixel(x + i, y + j).B;
 
-                  sDenR += Math.Pow(bitmap.GetPixel(x + i, y + j).R, filterGrade);
-                  sDenG += Math.Pow(bitmap.GetPixel(x + i, y + j).G, filterGrade);
-                  sDenB += Math.Pow(bitmap.GetPixel(x + i, y + j).B, filterGrade);
+                  sNumR += r != 0 ? Math.Pow(r, filterGrade + 1) : 0;
+                  sNumG += g != 0 ? Math.Pow(g, filterGrade + 1) : 0;
+                  sNumB += b != 0 ? Math.Pow(b, filterGrade + 1) : 0;
+
+                  sDenR += r != 0 ? Math.Pow(r, filterGrade) : 0;
+                  sDenG += g != 0 ? Math.Pow(g, filterGrade) : 0;
+                  sDenB += b != 0 ? Math.Pow(b, filterGrade) : 0;
                 }
               }
             }
@@ -67,18 +73,46 @@ namespace FilteringImage
 
     public static Bitmap FilterMidpoint(Bitmap bitmap, byte maskGradeIndex)
     {
-      int height = bitmap.Size.Height;
-      int width = bitmap.Size.Width;
-
-      for(int x = 0; x < width; x++)
+      if(maskGrades.Length >= maskGradeIndex)
       {
-        for(int y = 0; y < height; y++)
+        int height = bitmap.Size.Height;
+        int width = bitmap.Size.Width;
+
+        byte r, g, b;
+
+        byte maskGrade = maskGrades[maskGradeIndex];
+        int maskArea = maskGrade - 2;
+        int maskAreaMin = maskArea * (-1);
+
+        List<int> sumR = new List<int>();
+        List<int> sumG = new List<int>();
+        List<int> sumB = new List<int>();
+
+        for(int x = 0; x < width; x++)
         {
-          if(maskGrades.Length >= maskGradeIndex)
+          for(int y = 0; y < height; y++)
           {
-            byte maskGrade = maskGrades[maskGradeIndex];
-            int maskArea = maskGrade - 2;
-            int maskAreaMin = maskArea * (-1);
+            sumR.Clear();
+            sumG.Clear();
+            sumB.Clear();
+
+            for(int i = maskAreaMin; i <= maskArea; i++)
+            {
+              for(int j = maskAreaMin; j <= maskArea; j++)
+              {
+                if(isMaskPointInImageArea(x, y, i, j, height, width, maskGrade))
+                {
+                  sumR.Add(bitmap.GetPixel(x + i, y + j).R);
+                  sumG.Add(bitmap.GetPixel(x + i, y + j).G);
+                  sumB.Add(bitmap.GetPixel(x + i, y + j).B);
+                }
+              }
+            }
+            r = (byte)((sumR.Max() + sumR.Min()) / 2);
+            g = (byte)((sumG.Max() + sumG.Min()) / 2);
+            b = (byte)((sumB.Max() + sumB.Min()) / 2);
+
+            bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
           }
         }
       }

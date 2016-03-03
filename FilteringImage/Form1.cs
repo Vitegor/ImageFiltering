@@ -19,6 +19,7 @@ namespace FilteringImage
     {
       InitializeComponent();
       cboxMaskSize.SelectedIndex = 0;
+      cboxCounterHarmonicFilterGrade.SelectedIndex = 1;
     }
 
     private void btnGetImage_Click(object sender, EventArgs e)
@@ -110,12 +111,14 @@ namespace FilteringImage
       resultImage.Image = Filter.FilterCounterHarmonic(
         new Bitmap(resultImage.Image),
         (byte)cboxMaskSize.SelectedIndex,
-        Convert.ToDouble(txbCounterHarmonicFilterGrade.Text));
+        (byte)cboxCounterHarmonicFilterGrade.SelectedIndex);
     }
 
     private void btnFilterMidpoint_Click(object sender, EventArgs e)
     {
-      resultImage.Image = Filter.FilterMidpoint(new Bitmap(resultImage.Image), 3);
+      resultImage.Image = Filter.FilterMidpoint(
+        new Bitmap(resultImage.Image),
+        (byte)cboxMaskSize.SelectedIndex);
     }
   }
 }
