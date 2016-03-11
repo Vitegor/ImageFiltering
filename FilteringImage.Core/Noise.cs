@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace FilteringImage
+namespace FilteringImage.Core
 {
   public static class Noise
   {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace FilteringImage
+namespace FilteringImage.Core
 {
   public enum RGBChannel { Red, Green, Blue }
 
