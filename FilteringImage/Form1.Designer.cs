@@ -38,12 +38,16 @@
       this.chboxChannelGreen = new System.Windows.Forms.CheckBox();
       this.chboxChannelRed = new System.Windows.Forms.CheckBox();
       this.grboxNoise = new System.Windows.Forms.GroupBox();
+      this.panel5 = new System.Windows.Forms.Panel();
+      this.panel4 = new System.Windows.Forms.Panel();
       this.panel2 = new System.Windows.Forms.Panel();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.panel3 = new System.Windows.Forms.Panel();
       this.btnAddNoiseUnipolarPepper = new System.Windows.Forms.Button();
       this.btnAddNoiseBipolar = new System.Windows.Forms.Button();
       this.btnAddNoiseUnipolarSalt = new System.Windows.Forms.Button();
       this.grboxFiltering = new System.Windows.Forms.GroupBox();
+      this.cboxCounterHarmonicFilterGrade = new System.Windows.Forms.ComboBox();
       this.label4 = new System.Windows.Forms.Label();
       this.cboxMaskSize = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
@@ -53,10 +57,6 @@
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.btnResetImage = new System.Windows.Forms.Button();
-      this.panel3 = new System.Windows.Forms.Panel();
-      this.panel4 = new System.Windows.Forms.Panel();
-      this.panel5 = new System.Windows.Forms.Panel();
-      this.cboxCounterHarmonicFilterGrade = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       this.grboxColorChannel.SuspendLayout();
       this.grboxNoise.SuspendLayout();
@@ -176,6 +176,22 @@
       this.grboxNoise.TabStop = false;
       this.grboxNoise.Text = "Add Noise";
       // 
+      // panel5
+      // 
+      this.panel5.BackColor = System.Drawing.Color.Black;
+      this.panel5.Location = new System.Drawing.Point(171, 38);
+      this.panel5.Name = "panel5";
+      this.panel5.Size = new System.Drawing.Size(15, 15);
+      this.panel5.TabIndex = 14;
+      // 
+      // panel4
+      // 
+      this.panel4.BackColor = System.Drawing.Color.White;
+      this.panel4.Location = new System.Drawing.Point(156, 38);
+      this.panel4.Name = "panel4";
+      this.panel4.Size = new System.Drawing.Size(15, 15);
+      this.panel4.TabIndex = 14;
+      // 
       // panel2
       // 
       this.panel2.BackColor = System.Drawing.Color.Black;
@@ -192,6 +208,14 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(15, 15);
       this.panel1.TabIndex = 12;
+      // 
+      // panel3
+      // 
+      this.panel3.BackColor = System.Drawing.Color.White;
+      this.panel3.Location = new System.Drawing.Point(0, 0);
+      this.panel3.Name = "panel3";
+      this.panel3.Size = new System.Drawing.Size(15, 15);
+      this.panel3.TabIndex = 13;
       // 
       // btnAddNoiseUnipolarPepper
       // 
@@ -242,6 +266,18 @@
       this.grboxFiltering.TabIndex = 5;
       this.grboxFiltering.TabStop = false;
       this.grboxFiltering.Text = "Filtering";
+      // 
+      // cboxCounterHarmonicFilterGrade
+      // 
+      this.cboxCounterHarmonicFilterGrade.FormattingEnabled = true;
+      this.cboxCounterHarmonicFilterGrade.Items.AddRange(new object[] {
+            "-1",
+            "0",
+            "1"});
+      this.cboxCounterHarmonicFilterGrade.Location = new System.Drawing.Point(106, 83);
+      this.cboxCounterHarmonicFilterGrade.Name = "cboxCounterHarmonicFilterGrade";
+      this.cboxCounterHarmonicFilterGrade.Size = new System.Drawing.Size(91, 21);
+      this.cboxCounterHarmonicFilterGrade.TabIndex = 12;
       // 
       // label4
       // 
@@ -338,42 +374,6 @@
       this.btnResetImage.Text = "Reset Image";
       this.btnResetImage.UseVisualStyleBackColor = true;
       this.btnResetImage.Click += new System.EventHandler(this.btnResetImage_Click);
-      // 
-      // panel3
-      // 
-      this.panel3.BackColor = System.Drawing.Color.White;
-      this.panel3.Location = new System.Drawing.Point(0, 0);
-      this.panel3.Name = "panel3";
-      this.panel3.Size = new System.Drawing.Size(15, 15);
-      this.panel3.TabIndex = 13;
-      // 
-      // panel4
-      // 
-      this.panel4.BackColor = System.Drawing.Color.White;
-      this.panel4.Location = new System.Drawing.Point(156, 38);
-      this.panel4.Name = "panel4";
-      this.panel4.Size = new System.Drawing.Size(15, 15);
-      this.panel4.TabIndex = 14;
-      // 
-      // panel5
-      // 
-      this.panel5.BackColor = System.Drawing.Color.Black;
-      this.panel5.Location = new System.Drawing.Point(171, 38);
-      this.panel5.Name = "panel5";
-      this.panel5.Size = new System.Drawing.Size(15, 15);
-      this.panel5.TabIndex = 14;
-      // 
-      // cboxCounterHarmonicFilterGrade
-      // 
-      this.cboxCounterHarmonicFilterGrade.FormattingEnabled = true;
-      this.cboxCounterHarmonicFilterGrade.Items.AddRange(new object[] {
-            "-1",
-            "0",
-            "1"});
-      this.cboxCounterHarmonicFilterGrade.Location = new System.Drawing.Point(106, 83);
-      this.cboxCounterHarmonicFilterGrade.Name = "cboxCounterHarmonicFilterGrade";
-      this.cboxCounterHarmonicFilterGrade.Size = new System.Drawing.Size(91, 21);
-      this.cboxCounterHarmonicFilterGrade.TabIndex = 12;
       // 
       // formMain
       // 

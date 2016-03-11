@@ -25,7 +25,7 @@ namespace FilteringImage
 
     private void btnGetImage_Click(object sender, EventArgs e)
     {
-      openImage.Filter = "BMP files (*.bmp) | *.bmp;";
+      openImage.Filter = GetSaveImage.ExtensionPatternImage;
 
       if (openImage.ShowDialog() == DialogResult.OK)
       {
@@ -44,8 +44,8 @@ namespace FilteringImage
     {
       if (resultImage.Image != null)
       {
-        saveImage.DefaultExt = ".bmp";
-        saveImage.Filter = "BMP images (*.bmp) | *.bmp;";
+        saveImage.DefaultExt = GetSaveImage.DefaultExtensionImage;
+        saveImage.Filter = GetSaveImage.ExtensionPatternImage;
 
         if (saveImage.ShowDialog() == DialogResult.OK)
         {
