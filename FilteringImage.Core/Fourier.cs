@@ -8,6 +8,7 @@ namespace FilteringImage.Core
 {
   public static class Fourier
   {
+    private const int defaultM = 100;
     /*
       Прямое дискретное преобразование Фурье
 
@@ -16,7 +17,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult DFT(double[] sourceFx, int m = 100)
+    public static FourierResult DFT(double[] sourceFx, int m = defaultM)
     {
       int sourceLength = sourceFx.Length;
       /*
@@ -77,7 +78,7 @@ namespace FilteringImage.Core
       Параметры:
         dft - результат прямого преобразования Фурье
     */
-    public static double[] FourierSpectrum(double[] fx, int m = 100)
+    public static double[] FourierSpectrum(double[] fx, int m = defaultM)
     {
       FourierResult dft = DFT(fx, m);
       int processingLimit = m - 1;
@@ -85,7 +86,7 @@ namespace FilteringImage.Core
 
       for(int u = 0; u <= processingLimit; u++)
       {
-        result[u] = Math.Sqrt(Math.Pow(dft.Re[u], 2) - Math.Pow(dft.Im[u], 2));
+        result[u] = Math.Sqrt(Math.Pow(dft.Re[u], 2) + Math.Pow(dft.Im[u], 2));
       }
 
       return result;
