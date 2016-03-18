@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="ColorChannel.cs" />
     <Compile Include="Filter.cs" />
-    <Compile Include="GetSaveImage.cs" />
+    <Compile Include="Fourier.cs" />
+    <Compile Include="ImageFormatSettings.cs" />
     <Compile Include="Noise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RGBChannel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,10 +7,52 @@ using System.Drawing;
 
 namespace FilteringImage.Core
 {
-  public enum RGBChannel { Red, Green, Blue }
-
   public static class ColorChannel
   {
+    public static Bitmap HighlightColorChannel(Bitmap srcBitmap, Bitmap bitmap, RGBChannel color)
+    {
+      int height = srcBitmap.Size.Height;
+      int width = srcBitmap.Size.Width;
+      byte r = 0;
+      byte g = 0;
+      byte b = 0;
+
+      for(int x = 0; x < width; x++)
+      {
+        for(int y = 0; y < height; y++)
+        {
+          switch(color)
+          {
+            case RGBChannel.Red:
+            {
+              r = srcBitmap.GetPixel(x, y).R;
+              g = 0;
+              b = 0;
+              break;
+            }
+            case RGBChannel.Green:
+            {
+              r = 0;
+              g = srcBitmap.GetPixel(x, y).G;
+              b = 0;
+              break;
+            }
+            case RGBChannel.Blue:
+            {
+              r = 0;
+              g = 0;
+              b = srcBitmap.GetPixel(x, y).B;
+              break;
+            }
+          }
+
+          bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
+        }
+      }
+
+      return bitmap;
+    }
+
     #region Hide Color Channel
     public static Bitmap HideRedChannel(Bitmap bitmap)
     {
@@ -33,7 +75,7 @@ namespace FilteringImage.Core
       int width = bitmap.Size.Width;
       byte r, g, b;
 
-      for (int x = 0; x < width; x++)
+      for(int x = 0; x < width; x++)
       {
         for(int y = 0; y < height; y++)
         {
@@ -43,9 +85,9 @@ namespace FilteringImage.Core
 
           switch(color)
           {
-            case RGBChannel.Red:   r = 0; break;
+            case RGBChannel.Red: r = 0; break;
             case RGBChannel.Green: g = 0; break;
-            case RGBChannel.Blue:  b = 0; break;
+            case RGBChannel.Blue: b = 0; break;
           }
 
           bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
@@ -78,9 +120,9 @@ namespace FilteringImage.Core
       int width = srcBitmap.Size.Width;
       byte r, g, b;
 
-      for(int x = 0; x < width;x++)
+      for(int x = 0; x < width; x++)
       {
-        for(int y = 0; y < height;y++)
+        for(int y = 0; y < height; y++)
         {
           r = bitmap.GetPixel(x, y).R;
           g = bitmap.GetPixel(x, y).G;
@@ -88,9 +130,9 @@ namespace FilteringImage.Core
 
           switch(color)
           {
-            case RGBChannel.Red:   r = srcBitmap.GetPixel(x, y).R; break;
+            case RGBChannel.Red: r = srcBitmap.GetPixel(x, y).R; break;
             case RGBChannel.Green: g = srcBitmap.GetPixel(x, y).G; break;
-            case RGBChannel.Blue:  b = srcBitmap.GetPixel(x, y).B; break;
+            case RGBChannel.Blue: b = srcBitmap.GetPixel(x, y).B; break;
           }
 
           bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));

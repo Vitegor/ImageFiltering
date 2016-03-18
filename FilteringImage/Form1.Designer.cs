@@ -34,9 +34,6 @@
       this.openImage = new System.Windows.Forms.OpenFileDialog();
       this.saveImage = new System.Windows.Forms.SaveFileDialog();
       this.grboxColorChannel = new System.Windows.Forms.GroupBox();
-      this.chboxChannelBlue = new System.Windows.Forms.CheckBox();
-      this.chboxChannelGreen = new System.Windows.Forms.CheckBox();
-      this.chboxChannelRed = new System.Windows.Forms.CheckBox();
       this.grboxNoise = new System.Windows.Forms.GroupBox();
       this.panel5 = new System.Windows.Forms.Panel();
       this.panel4 = new System.Windows.Forms.Panel();
@@ -57,6 +54,9 @@
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.btnResetImage = new System.Windows.Forms.Button();
+      this.rdoRed = new System.Windows.Forms.RadioButton();
+      this.rdoGreen = new System.Windows.Forms.RadioButton();
+      this.rdoBlue = new System.Windows.Forms.RadioButton();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       this.grboxColorChannel.SuspendLayout();
       this.grboxNoise.SuspendLayout();
@@ -100,9 +100,9 @@
       // 
       // grboxColorChannel
       // 
-      this.grboxColorChannel.Controls.Add(this.chboxChannelBlue);
-      this.grboxColorChannel.Controls.Add(this.chboxChannelGreen);
-      this.grboxColorChannel.Controls.Add(this.chboxChannelRed);
+      this.grboxColorChannel.Controls.Add(this.rdoBlue);
+      this.grboxColorChannel.Controls.Add(this.rdoGreen);
+      this.grboxColorChannel.Controls.Add(this.rdoRed);
       this.grboxColorChannel.Enabled = false;
       this.grboxColorChannel.Location = new System.Drawing.Point(554, 134);
       this.grboxColorChannel.Name = "grboxColorChannel";
@@ -110,54 +110,6 @@
       this.grboxColorChannel.TabIndex = 3;
       this.grboxColorChannel.TabStop = false;
       this.grboxColorChannel.Text = "Select Color Channel";
-      // 
-      // chboxChannelBlue
-      // 
-      this.chboxChannelBlue.AutoSize = true;
-      this.chboxChannelBlue.CausesValidation = false;
-      this.chboxChannelBlue.Checked = true;
-      this.chboxChannelBlue.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chboxChannelBlue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.chboxChannelBlue.ForeColor = System.Drawing.Color.Blue;
-      this.chboxChannelBlue.Location = new System.Drawing.Point(149, 29);
-      this.chboxChannelBlue.Name = "chboxChannelBlue";
-      this.chboxChannelBlue.Size = new System.Drawing.Size(54, 20);
-      this.chboxChannelBlue.TabIndex = 13;
-      this.chboxChannelBlue.Text = "Blue";
-      this.chboxChannelBlue.UseVisualStyleBackColor = true;
-      this.chboxChannelBlue.CheckedChanged += new System.EventHandler(this.chboxChannelBlue_CheckedChanged);
-      // 
-      // chboxChannelGreen
-      // 
-      this.chboxChannelGreen.AutoSize = true;
-      this.chboxChannelGreen.CausesValidation = false;
-      this.chboxChannelGreen.Checked = true;
-      this.chboxChannelGreen.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chboxChannelGreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.chboxChannelGreen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-      this.chboxChannelGreen.Location = new System.Drawing.Point(82, 29);
-      this.chboxChannelGreen.Name = "chboxChannelGreen";
-      this.chboxChannelGreen.Size = new System.Drawing.Size(64, 20);
-      this.chboxChannelGreen.TabIndex = 12;
-      this.chboxChannelGreen.Text = "Green";
-      this.chboxChannelGreen.UseVisualStyleBackColor = true;
-      this.chboxChannelGreen.CheckedChanged += new System.EventHandler(this.chboxChannelGreen_CheckedChanged);
-      // 
-      // chboxChannelRed
-      // 
-      this.chboxChannelRed.AutoSize = true;
-      this.chboxChannelRed.CausesValidation = false;
-      this.chboxChannelRed.Checked = true;
-      this.chboxChannelRed.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chboxChannelRed.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.chboxChannelRed.ForeColor = System.Drawing.Color.Red;
-      this.chboxChannelRed.Location = new System.Drawing.Point(19, 29);
-      this.chboxChannelRed.Name = "chboxChannelRed";
-      this.chboxChannelRed.Size = new System.Drawing.Size(53, 20);
-      this.chboxChannelRed.TabIndex = 11;
-      this.chboxChannelRed.Text = "Red";
-      this.chboxChannelRed.UseVisualStyleBackColor = true;
-      this.chboxChannelRed.CheckedChanged += new System.EventHandler(this.chboxChannelRed_CheckedChanged);
       // 
       // grboxNoise
       // 
@@ -375,6 +327,46 @@
       this.btnResetImage.UseVisualStyleBackColor = true;
       this.btnResetImage.Click += new System.EventHandler(this.btnResetImage_Click);
       // 
+      // rdoRed
+      // 
+      this.rdoRed.AutoSize = true;
+      this.rdoRed.Checked = true;
+      this.rdoRed.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.rdoRed.ForeColor = System.Drawing.Color.Red;
+      this.rdoRed.Location = new System.Drawing.Point(14, 31);
+      this.rdoRed.Name = "rdoRed";
+      this.rdoRed.Size = new System.Drawing.Size(52, 20);
+      this.rdoRed.TabIndex = 0;
+      this.rdoRed.TabStop = true;
+      this.rdoRed.Text = "Red";
+      this.rdoRed.UseVisualStyleBackColor = true;
+      // 
+      // rdoGreen
+      // 
+      this.rdoGreen.AutoSize = true;
+      this.rdoGreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.rdoGreen.ForeColor = System.Drawing.Color.Green;
+      this.rdoGreen.Location = new System.Drawing.Point(83, 31);
+      this.rdoGreen.Name = "rdoGreen";
+      this.rdoGreen.Size = new System.Drawing.Size(63, 20);
+      this.rdoGreen.TabIndex = 12;
+      this.rdoGreen.TabStop = true;
+      this.rdoGreen.Text = "Green";
+      this.rdoGreen.UseVisualStyleBackColor = true;
+      // 
+      // rdoBlue
+      // 
+      this.rdoBlue.AutoSize = true;
+      this.rdoBlue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.rdoBlue.ForeColor = System.Drawing.Color.DodgerBlue;
+      this.rdoBlue.Location = new System.Drawing.Point(156, 31);
+      this.rdoBlue.Name = "rdoBlue";
+      this.rdoBlue.Size = new System.Drawing.Size(53, 20);
+      this.rdoBlue.TabIndex = 13;
+      this.rdoBlue.TabStop = true;
+      this.rdoBlue.Text = "Blue";
+      this.rdoBlue.UseVisualStyleBackColor = true;
+      // 
       // formMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -425,9 +417,6 @@
     private System.Windows.Forms.PictureBox resultImage;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.CheckBox chboxChannelRed;
-    private System.Windows.Forms.CheckBox chboxChannelBlue;
-    private System.Windows.Forms.CheckBox chboxChannelGreen;
     private System.Windows.Forms.Button btnResetImage;
     private System.Windows.Forms.Button btnAddNoiseUnipolarPepper;
     private System.Windows.Forms.Label label4;
@@ -437,6 +426,9 @@
     private System.Windows.Forms.Panel panel4;
     private System.Windows.Forms.Panel panel3;
     private System.Windows.Forms.ComboBox cboxCounterHarmonicFilterGrade;
+    private System.Windows.Forms.RadioButton rdoBlue;
+    private System.Windows.Forms.RadioButton rdoGreen;
+    private System.Windows.Forms.RadioButton rdoRed;
   }
 }
 

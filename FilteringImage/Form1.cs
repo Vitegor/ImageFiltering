@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using FilteringImage.Core;
@@ -14,8 +8,16 @@ namespace FilteringImage
 {
   public partial class formMain : Form
   {
+    //Битовая карта исходной изображения
     private static Bitmap sourceBitmap;
+    
+    //Размерности масок
+    private static byte[] maskGrades = new byte[] { 3, 5, 9 };
 
+    //Порядки фильтра средненго контргармонического
+    private static double[] harmonicFilterGrade = new double[] { -1, 0, 1 };
+
+    //Инициализация формы
     public formMain()
     {
       InitializeComponent();
@@ -23,9 +25,10 @@ namespace FilteringImage
       cboxCounterHarmonicFilterGrade.SelectedIndex = 1;
     }
 
+    //Загрузка изображения в программу
     private void btnGetImage_Click(object sender, EventArgs e)
     {
-      openImage.Filter = GetSaveImage.ExtensionPatternImage;
+      openImage.Filter = ImageFormatSettings.ExtensionsPatternsForOpen;
 
       if (openImage.ShowDialog() == DialogResult.OK)
       {
@@ -40,12 +43,13 @@ namespace FilteringImage
       }
     }
 
+    //Сохранение изображения
     private void btnSaveImage_Click(object sender, EventArgs e)
     {
       if (resultImage.Image != null)
       {
-        saveImage.DefaultExt = GetSaveImage.DefaultExtensionImage;
-        saveImage.Filter = GetSaveImage.ExtensionPatternImage;
+        saveImage.DefaultExt = ImageFormatSettings.ExtensionForSave;
+        saveImage.Filter = ImageFormatSettings.ExtensionsPatternsForOpen;
 
         if (saveImage.ShowDialog() == DialogResult.OK)
         {
@@ -54,72 +58,57 @@ namespace FilteringImage
       }
     }
 
+    //Сброс обрабатываемого изображения в исходное состояние
     private void btnResetImage_Click(object sender, EventArgs e)
     {
       resultImage.Image = sourceImage.Image;
     }
 
-    private void chboxChannelRed_CheckedChanged(object sender, EventArgs e)
-    {
-      Bitmap resultBitmap = new Bitmap(resultImage.Image);
-
-      if (chboxChannelRed.Checked == false)
-        resultImage.Image = ColorChannel.HideRedChannel(resultBitmap);
-      else
-        resultImage.Image = ColorChannel.ShowRedChannel(sourceBitmap, resultBitmap);
-    }
-
-    private void chboxChannelGreen_CheckedChanged(object sender, EventArgs e)
-    {
-      Bitmap resultBitmap = new Bitmap(resultImage.Image);
-
-      if (chboxChannelGreen.Checked == false)
-        resultImage.Image = ColorChannel.HideGreenChannel(resultBitmap);
-      else
-        resultImage.Image = ColorChannel.ShowGreenChannel(sourceBitmap, resultBitmap);
-    }
-
-    private void chboxChannelBlue_CheckedChanged(object sender, EventArgs e)
-    {
-      Bitmap resultBitmap = new Bitmap(resultImage.Image);
-
-      if (chboxChannelBlue.Checked == false)
-        resultImage.Image = ColorChannel.HideBlueChannel(resultBitmap);
-      else
-        resultImage.Image = ColorChannel.ShowBlueChannel(sourceBitmap, resultBitmap);
-    }
-
+    //Добавление биполярного шума
     private void btnAddNoiseBipolar_Click(object sender, EventArgs e)
     {
       Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddBipolarNoise(bitmap);
+      resultImage.Image = Noise.AddBipolarNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Добавление униполярного соляного шума
     private void btnAddNoiseUnipolarSalt_Click(object sender, EventArgs e)
     {
       Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddUnipolarSaltNoise(bitmap);
+      resultImage.Image = Noise.AddUnipolarSaltNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Добавление униполярного перечного шума
     private void btnAddNoiseUnipolarPepper_Click(object sender, EventArgs e)
     {
       Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap);
+      resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Применение контргармонического фильтра
     private void btnFilterCounterHarmonic_Click(object sender, EventArgs e)
     {
       resultImage.Image = Filter.FilterCounterHarmonic(
         new Bitmap(resultImage.Image),
-        (byte)cboxMaskSize.SelectedIndex,
-        (byte)cboxCounterHarmonicFilterGrade.SelectedIndex);
+        maskGrades[(byte)cboxMaskSize.SelectedIndex],
+        harmonicFilterGrade[(byte)cboxCounterHarmonicFilterGrade.SelectedIndex]);
     }
 
+    //Применение фильтра стредней точки
     private void btnFilterMidpoint_Click(object sender, EventArgs e)
     {
       resultImage.Image = Filter.FilterMidpoint(
         new Bitmap(resultImage.Image),
-        (byte)cboxMaskSize.SelectedIndex);
+         maskGrades[(byte)cboxMaskSize.SelectedIndex]);
+    }
+
+    //Получение текущего выбранного цветового канала
+    private RGBChannel GetCurrentColorChannel()
+    {
+      RGBChannel colorChannel = RGBChannel.Red;
+      if(rdoGreen.Checked) colorChannel = RGBChannel.Green;
+      if(rdoBlue.Checked) colorChannel = RGBChannel.Blue;
+      return colorChannel;
     }
   }
 }

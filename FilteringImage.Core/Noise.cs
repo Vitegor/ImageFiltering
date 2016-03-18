@@ -1,32 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace FilteringImage.Core
 {
+  //Класс, реализующий добавление шумов
   public static class Noise
   {
-    private static Random randomPixels = new Random();
+    //Количество пикселей, подлежащих зашумлению (1 - 100%)
     private const double PIXELS_PERCENTAGE = 0.1;
 
-    public static Bitmap AddBipolarNoise(Bitmap bitmap)
+    //Значение минимальной интенсивности цветового канала
+    private const byte MIN_COLOR_INTENSITY = 0;
+
+    //Значение максимальной интенсивности цветового канала
+    private const byte MAX_COLOR_INTENSITY = 255;
+
+    private static Random randomPixels = new Random();
+
+    /*
+      Биполярный шум.
+
+      Параметры:
+        bitmap - исоходная битовая карта изображения
+        colorChannel - цветовой канал, по которому производится зашумление
+    */
+    public static Bitmap AddBipolarNoise(Bitmap bitmap, RGBChannel colorChannel)
     {
       int height = bitmap.Size.Height;
       int width = bitmap.Size.Width;
-      Color color;
+      byte r = 0;
+      byte g = 0;
+      byte b = 0;
+      byte colorIntensity = 0;
       Random randomColor = new Random();
 
-      for (int x = 0; x < width; x++)
+      for(int x = 0; x < width; x++)
       {
         for(int y = 0; y < height; y++)
         {
-          if (randomPixels.NextDouble() < PIXELS_PERCENTAGE)
+
+          if(randomPixels.NextDouble() < PIXELS_PERCENTAGE)
           {
-            color = randomColor.NextDouble() > 0.5 ? Color.Black : Color.White;
-            bitmap.SetPixel(x, y, color);
+            r = bitmap.GetPixel(x, y).R;
+            g = bitmap.GetPixel(x, y).G;
+            b = bitmap.GetPixel(x, y).B;
+
+            colorIntensity
+              = randomColor.NextDouble() > 0.5
+              ? MAX_COLOR_INTENSITY
+              : MIN_COLOR_INTENSITY;
+
+            switch(colorChannel)
+            {
+              case RGBChannel.Red: r = colorIntensity; break;
+              case RGBChannel.Green: g = colorIntensity; break;
+              case RGBChannel.Blue: b = colorIntensity; break;
+            }
+
+            bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
           }
         }
       }
@@ -34,29 +65,75 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
-    public static Bitmap AddUnipolarSaltNoise(Bitmap bitmap)
+    /*
+      Униполярный соляной шум.
+
+      Параметры:
+        bitmap - исоходная битовая карта изображения
+        colorChannel - цветовой канал, по которому производится зашумление
+    */
+    public static Bitmap AddUnipolarSaltNoise(Bitmap bitmap, RGBChannel colorChannel)
     {
-      return AddUnipolarNoise(bitmap, Color.White);
+      return AddUnipolarNoise(bitmap, colorChannel, Color.White);
     }
 
-    public static Bitmap AddUnipolarPepperNoise(Bitmap bitmap)
+    /*
+      Униполярный перечный шум.
+
+      Параметры:
+        bitmap - исоходная битовая карта изображения
+        colorChannel - цветовой канал, по которому производится зашумление
+    */
+    public static Bitmap AddUnipolarPepperNoise(Bitmap bitmap, RGBChannel colorChannel)
     {
-      return AddUnipolarNoise(bitmap, Color.Black);
+      return AddUnipolarNoise(bitmap, colorChannel, Color.Black);
     }
 
-    private static Bitmap AddUnipolarNoise(Bitmap bitmap, Color colorForNoise)
-    {
-      int height = bitmap.Size.Height;
-      int width = bitmap.Size.Width;
+    /*
+      Общий метод для реализации униполярного шума.
 
-      for (int x = 0; x < width; x++)
+      Параметры:
+        bitmap - исоходная битовая карта изображения
+        colorChannel - цветовой канал, по которому производится зашумление
+        colorForNoise - цвет, определяющий тип униполярного шума (черный - перечный, белый - соляной)
+    */
+    private static Bitmap AddUnipolarNoise(Bitmap bitmap, RGBChannel colorChannel, Color colorForNoise)
+    {
+      if(colorForNoise == Color.Black || colorForNoise == Color.White)
       {
-        for (int y = 0; y < height; y++)
+        int height = bitmap.Size.Height;
+        int width = bitmap.Size.Width;
+        byte r = 0;
+        byte g = 0;
+        byte b = 0;
+
+        for(int x = 0; x < width; x++)
         {
-          if (randomPixels.NextDouble() < PIXELS_PERCENTAGE)
+          for(int y = 0; y < height; y++)
           {
-            if (colorForNoise == Color.Black || colorForNoise == Color.White)
-              bitmap.SetPixel(x, y, colorForNoise);
+            if(randomPixels.NextDouble() < PIXELS_PERCENTAGE)
+            {
+              r = bitmap.GetPixel(x, y).R;
+              g = bitmap.GetPixel(x, y).G;
+              b = bitmap.GetPixel(x, y).B;
+
+              switch(colorChannel)
+              {
+                case RGBChannel.Red:
+                r = colorForNoise == Color.Black ? MAX_COLOR_INTENSITY : MIN_COLOR_INTENSITY;
+                break;
+
+                case RGBChannel.Green:
+                g = colorForNoise == Color.Black ? MAX_COLOR_INTENSITY : MIN_COLOR_INTENSITY;
+                break;
+
+                case RGBChannel.Blue:
+                b = colorForNoise == Color.Black ? MAX_COLOR_INTENSITY : MIN_COLOR_INTENSITY;
+                break;
+              }
+
+              bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
+            }
           }
         }
       }

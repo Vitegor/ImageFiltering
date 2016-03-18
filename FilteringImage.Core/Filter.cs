@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace FilteringImage.Core
 {
+  //Класс, реализующий методы фильтрации
   public static class Filter
   {
-    private static byte[] maskGrades = new byte[] { 3, 5, 9 };
-    private static double[] harmonicFilterGrade = new double[] { -1, 0, 1 };
+    /*
+      Фильтр среднего контргармонического.
 
-    public static Bitmap FilterCounterHarmonic(Bitmap bitmap, byte maskGradeIndex, byte harmonicFilterGradeIndex)
+      Параметры:
+        bitmap - битовая карта исходного изображения
+        maskGradeIndex - размер маски
+        filterGrade - порядок фильтра
+    */
+    public static Bitmap FilterCounterHarmonic(Bitmap bitmap, byte maskGrade, double filterGrade)
     {
-      if(maskGrades.Length >= maskGradeIndex)
+      if(maskGrade >= 2)
       {
         int height = bitmap.Size.Height;
         int width = bitmap.Size.Width;
@@ -24,8 +28,6 @@ namespace FilteringImage.Core
 
         byte r, g, b;
 
-        byte maskGrade = maskGrades[maskGradeIndex];
-        double filterGrade = harmonicFilterGrade[harmonicFilterGradeIndex];
         int maskArea = maskGrade - 2;
         int maskAreaMin = maskArea * (-1);
 
@@ -42,7 +44,7 @@ namespace FilteringImage.Core
             {
               for(int j = maskAreaMin; j <= maskArea; j++)
               {
-                if(isMaskPointInImageArea(x, y, i, j, height, width, maskGrade))
+                if(isMaskPointInImageArea(x, y, height, width, i, j, maskGrade))
                 {
                   r = bitmap.GetPixel(x + i, y + j).R;
                   g = bitmap.GetPixel(x + i, y + j).G;
@@ -71,16 +73,22 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
-    public static Bitmap FilterMidpoint(Bitmap bitmap, byte maskGradeIndex)
+    /*
+      Фильтр срединной точки.
+
+      Параметры:
+        bitmap - битовая карта исходного изображения
+        maskGrade - размер маски
+    */
+    public static Bitmap FilterMidpoint(Bitmap bitmap, byte maskGrade)
     {
-      if(maskGrades.Length >= maskGradeIndex)
+      if(maskGrade >= 2)
       {
         int height = bitmap.Size.Height;
         int width = bitmap.Size.Width;
 
         byte r, g, b;
 
-        byte maskGrade = maskGrades[maskGradeIndex];
         int maskArea = maskGrade - 2;
         int maskAreaMin = maskArea * (-1);
 
@@ -100,7 +108,7 @@ namespace FilteringImage.Core
             {
               for(int j = maskAreaMin; j <= maskArea; j++)
               {
-                if(isMaskPointInImageArea(x, y, i, j, height, width, maskGrade))
+                if(isMaskPointInImageArea(x, y, height, width, i, j, maskGrade))
                 {
                   sumR.Add(bitmap.GetPixel(x + i, y + j).R);
                   sumG.Add(bitmap.GetPixel(x + i, y + j).G);
@@ -120,7 +128,19 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
-    private static bool isMaskPointInImageArea(int x, int y, int maskX, int maskY, int height, int width, byte maskGrade)
+    /*
+      Метод, определяющий, находится ли пиксель с текущими координатами в области изображения.
+
+      Параметры:
+        x - координата пикселя по оси Х на изображении
+        y - координата пикселя по оси Y на изображении
+        height - высота изображения (пиксели)
+        width - ширина изображения (пиксели)
+        maskX - координата пикселя по оси Х на маске
+        maskY - координата пикселя по оси У на маске
+        maskGrade - размерность маски (пиксели)
+    */
+    private static bool isMaskPointInImageArea(int x, int y, int height, int width, int maskX, int maskY, byte maskGrade)
     {
       return (x + maskX >= 0 && y + maskY >= 0) && (x + maskX <= width - 1 && y + maskY <= height - 1);
     }
