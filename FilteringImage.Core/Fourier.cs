@@ -17,7 +17,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult DFT(double[] sourceFx, int m = defaultM)
+    public static FourierResult DiscreteFourierTransform(double[] sourceFx, int m = defaultM)
     {
       int sourceLength = sourceFx.Length;
       /*
@@ -36,8 +36,12 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= processingLimit; x++)
         {
-          result.Re[u] += fx[x] * Math.Cos((2 * Math.PI * u * x) / m);
-          result.Im[u] += fx[x] * Math.Sin((2 * Math.PI * u * x) / m);
+          result.ReDFT[u] += ReDFT(fx[x], u, x, m);
+          result.ImDFT[u] += ImDFT(fx[x], u, x, m);
+          result.ReIDFT[u] += ReIDFT(result.ReDFT[u], u, x, m);
+          result.ImIDFT[u] += ImIDFT(result.ImIDFT[u], u, x, m);
+          result.FourierSpectrum[u] += FourierSpectrum(result.ReDFT[u], result.ImDFT[u]);
+          result.PowerSpectrum[u] += PowerSpectrum(result.FourierSpectrum[u]);
         }
       }
 
@@ -45,58 +49,94 @@ namespace FilteringImage.Core
     }
 
     /*
-      Обратное дискретное преобразование Фурье
-
+      Вычисление значения действительной части прямного дискретного преобразования Фурье.
+      
       Параметры:
-        dft - результат прямого преоразовния Фурьре
+        fx - значение функции
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult IDFT(FourierResult dft)
+    private static double ReDFT(double fx, int u, int x, int m)
     {
-      int m = dft.Re.Length;
-      int processingLimit = m - 1;
-      double[] re = new double[m]; //Действительная часть
-      double[] im = new double[m]; //Мнимая часть
-
-      //Структура данных, в которую будут помещены мнимая и действительная части
-      FourierResult result = new FourierResult();
-
-      for(var u = 0; u <= processingLimit; u++)
-      {
-        for(int x = 0; x <= processingLimit; x++)
-        {
-          result.Re[u] += dft.Re[x] * Math.Cos((2 * Math.PI * u * x) / m);
-          result.Im[u] += dft.Im[x] * Math.Sin((2 * Math.PI * u * x) / m);
-        }
-      }
-
-      return result;
+      return fx * Math.Cos((2 * Math.PI * u * x) / m);
     }
 
     /*
-      Фурье спектр
+      Вычисление значения мнимой части прямного дискретного преобразования Фурье.
 
       Параметры:
-        dft - результат прямого преобразования Фурье
+        fx - значение функции
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+
     */
-    public static double[] FourierSpectrum(double[] fx, int m = defaultM)
+    private static double ImDFT(double fx, int u, int x, int m)
     {
-      FourierResult dft = DFT(fx, m);
-      int processingLimit = m - 1;
-      double[] result = new double[m];
+      return fx * Math.Sin((2 * Math.PI * u * x) / m);
+    }
 
-      for(int u = 0; u <= processingLimit; u++)
-      {
-        result[u] = Math.Sqrt(Math.Pow(dft.Re[u], 2) + Math.Pow(dft.Im[u], 2));
-      }
+    /*
+      Вычисление значения действительной части обратного дискретного преобразования Фурье.
 
-      return result;
+      Параметры:
+        reDFT - значение действительной части прямонго преобразования Фурьре
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+    */
+    private static double ReIDFT(double reDFT, int u, int x, int m)
+    {
+      return reDFT * Math.Cos((2 * Math.PI * u * x) / m);
+    }
+
+    /*
+      Вычисление значения мнимой части обратного дискретного преобразования Фурье.
+
+      Параметры:
+        imDFT - значение мнимой части прямонго преобразования Фурьре
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+    */
+    private static double ImIDFT(double imDFT, int u, int x, int m)
+    {
+      return imDFT * Math.Sin((2 * Math.PI * u * x) / m);
+    }
+
+    /*
+      Вычисление значения спектра преобразования Фурье.
+
+      Параметры:
+        reDFT - значение действительной части прямого дискретного преобразования Фурьре
+        imDFT - значение мнимой части прямого дискретного преобразования Фурьре
+    */
+    private static double FourierSpectrum(double reDFT, double imDFT)
+    {
+      return Math.Sqrt(Math.Pow(reDFT, 2) + Math.Pow(imDFT, 2));
+    }
+
+    /*
+      Вычисление значения спектра мощности (энергетического спектра).
+
+      Параметры:
+        fourierSpectrum - значение спектра преобразования Фурье
+    */
+    private static double PowerSpectrum(double fourierSpectrum)
+    {
+      return fourierSpectrum * fourierSpectrum;
     }
 
     /*
       Центрирование функции.
 
       Параметры:
-        fх - центрируемый массив
+        fх - массив значений функции
     */
     private static double[] Centering(double[] fx)
     {
@@ -129,19 +169,24 @@ namespace FilteringImage.Core
     }
   }
 
-  //Структура результата для прямого и обратного преобразования Фурье
+  //Структура результата для преобразования Фурье
   public struct FourierResult
   {
-    private double[] _re;
-    private double[] _im;
-
     public FourierResult(int m)
     {
-      _re = new double[m];
-      _im = new double[m];
+      ReDFT = new double[m];
+      ImDFT = new double[m];
+      ReIDFT = new double[m];
+      ImIDFT = new double[m];
+      FourierSpectrum = new double[m];
+      PowerSpectrum = new double[m];
     }
 
-    public double[] Re { get { return _re; } } //Действительная часть
-    public double[] Im { get { return _im; } } //Мнимая часть
+    public double[] ReDFT { get; set; }           //Действительная часть прямного Фурье-преобразования
+    public double[] ImDFT { get; set; }           //Мнимая часть прямного Фурье-преобразования
+    public double[] ReIDFT { get; set; }          //Действительная часть обратного Фурье-преобразования
+    public double[] ImIDFT { get; set; }          //Мнимая часть обратного Фурье-преобразования
+    public double[] FourierSpectrum { get; set; } //Спектр Фурье преобразования
+    public double[] PowerSpectrum { get; set; }   //Спектр мощности (энергетический спектр)
   }
 }
