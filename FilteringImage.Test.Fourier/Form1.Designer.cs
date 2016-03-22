@@ -40,7 +40,6 @@
       this.chartSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.chartRe = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.chartIm = new System.Windows.Forms.DataVisualization.Charting.Chart();
-      this.button1 = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.chartSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chartSpectrum)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chartRe)).BeginInit();
@@ -112,22 +111,11 @@
       this.chartIm.TabIndex = 3;
       this.chartIm.Text = "chart4";
       // 
-      // button1
-      // 
-      this.button1.Location = new System.Drawing.Point(991, 12);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(75, 23);
-      this.button1.TabIndex = 4;
-      this.button1.Text = "button1";
-      this.button1.UseVisualStyleBackColor = true;
-      this.button1.Click += new System.EventHandler(this.button1_Click);
-      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1092, 642);
-      this.Controls.Add(this.button1);
+      this.ClientSize = new System.Drawing.Size(982, 642);
       this.Controls.Add(this.chartIm);
       this.Controls.Add(this.chartRe);
       this.Controls.Add(this.chartSpectrum);
@@ -149,7 +137,6 @@
     private System.Windows.Forms.DataVisualization.Charting.Chart chartSpectrum;
     private System.Windows.Forms.DataVisualization.Charting.Chart chartRe;
     private System.Windows.Forms.DataVisualization.Charting.Chart chartIm;
-    private System.Windows.Forms.Button button1;
   }
 }
 

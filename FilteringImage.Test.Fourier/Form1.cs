@@ -21,18 +21,13 @@ namespace FilteringImage.Test.Fourier
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      
-    }
-
-    private void button1_Click(object sender, EventArgs e)
-    {
       SeriesChartType CHART_TYPE = SeriesChartType.Spline;
       int LINE_WIDTH = 3;
-      int M = 100;
-      double[] fx = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-      Core.FourierResult fourierResult = Core.Fourier.DiscreteFourierTransform(fx);
+      int M = 1024;
+      double[] fx = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+      Core.FourierResult fourierResult = Core.Fourier.DFT(fx, M);
 
-      Series sourceSeries= chartSource.Series.Add("Исходный сигнал");
+      Series sourceSeries = chartSource.Series.Add("Исходный сигнал");
       Series spectrumSeries = chartSpectrum.Series.Add("Спектр преобразования Фурье");
       Series reSeries = chartRe.Series.Add("Действительная часть");
       Series imSeries = chartIm.Series.Add("Мнимая часть");
@@ -52,7 +47,7 @@ namespace FilteringImage.Test.Fourier
         sourceSeries.Points.AddXY(i, fx[i]);
       }
 
-      for(byte i = 0; i <= M - 1; i++)
+      for(int i = 0; i <= M - 1; i++)
       {
         spectrumSeries.Points.AddXY(i, fourierResult.FourierSpectrum[i]);
         reSeries.Points.AddXY(i, fourierResult.ReDFT[i]);

@@ -5,16 +5,63 @@ namespace FilteringImage.Core
   public static class Fourier
   {
     private const int defaultM = 100;
+    private const int defaultN = 100;
 
     /*
-      Прямое дискретное преобразование Фурье
+      Двумерное дискретное преобразование Фурье
+
+      Параметры:
+        srcFxy - исходный массив значений функции
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+        n - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+    */
+    public static FourierResult[] DFT2D(double[,] srcFxy, int m = defaultM, int n = defaultN)
+    {
+      int srcFxyLength = srcFxy.Rank;
+      int srcFxyHeight = srcFxy.Length;
+      int maxU = m - 1;
+      int maxV = n - 1;
+      double[,] fxy = new double[m, n];
+
+      FourierResult fxv = new FourierResult(m);
+      FourierResult[] result = new FourierResult[n];
+
+      for(int x = 0; x <= srcFxyLength - 1; x++)
+      {
+        for(int y = 0; y <= srcFxyHeight - 1; y++)
+        {
+          fxy[x, y] = srcFxy[x, y] * Step(x + y);
+        }
+      }
+
+      for(int u = 0; u <= maxU; u++)
+      {
+        for(int v = 0; v <= maxV; v++)
+        {
+          for(int x = 0; x <= maxU; x++)
+          {
+            for(int y = 0; y <= maxV; y++)
+            {
+              
+            }
+          }
+        }
+      }
+
+      return result;
+    }
+
+    /*
+      Одномерное дискретное преобразование Фурье
 
       Параметры:
         sourceFx - исходный массив значений функции
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult DiscreteFourierTransform(double[] sourceFx, int m = defaultM)
+    public static FourierResult DFT(double[] sourceFx, int m = defaultM)
     {
       int sourceLength = sourceFx.Length;
       /*
@@ -130,29 +177,12 @@ namespace FilteringImage.Core
     }
 
     /*
-      Центрирование функции.
-
-      Параметры:
-        fх - массив значений функции
-    */
-    private static double[] Centering(double[] fx)
-    {
-      int length = fx.Length - 1;
-      double[] result = new double[fx.Length];
-
-      for(var i = 0; i <= length; i++)
-        result[i] *= (byte)(1 - 2 * (!isEven(i) ? 1 : 0));
-
-      return result;
-    }
-
-    /*
       Возведение -1 в степень
 
       Параметры:
         n - степень
     */
-    private static double Step(int n) { return (byte)(1 - 2 * (!isEven(n) ? 1 : 0)); }
+    public static int Step(int n) { return 1 - 2 * (!isEven(n) ? 1 : 0); }
 
     /*
       Проверка числа на четность.
