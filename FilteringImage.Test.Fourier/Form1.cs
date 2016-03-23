@@ -23,9 +23,10 @@ namespace FilteringImage.Test.Fourier
     {
       SeriesChartType CHART_TYPE = SeriesChartType.Spline;
       int LINE_WIDTH = 3;
-      int M = 1024;
       double[] fx = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-      Core.FourierResult fourierResult = Core.Fourier.DFT(fx, M);
+      int m  = fx.Length;
+      int length = m - 1;
+      Core.FourierResult fourierResult = Core.Fourier.DFT(fx);
 
       Series sourceSeries = chartSource.Series.Add("Исходный сигнал");
       Series spectrumSeries = chartSpectrum.Series.Add("Спектр преобразования Фурье");
@@ -42,16 +43,16 @@ namespace FilteringImage.Test.Fourier
       chartRe.Series[0].BorderWidth = LINE_WIDTH;
       chartIm.Series[0].BorderWidth = LINE_WIDTH;
 
-      for(byte i = 0; i <= fx.Length - 1; i++)
+      for(byte i = 0; i <= length; i++)
       {
         sourceSeries.Points.AddXY(i, fx[i]);
       }
 
-      for(int i = 0; i <= M - 1; i++)
+      for(int i = 0; i <= length; i++)
       {
-        spectrumSeries.Points.AddXY(i, fourierResult.FourierSpectrum[i]);
-        reSeries.Points.AddXY(i, fourierResult.ReDFT[i]);
-        imSeries.Points.AddXY(i, fourierResult.ImDFT[i]);
+        spectrumSeries.Points.AddXY(i, fourierResult.Spectrum[i]);
+        reSeries.Points.AddXY(i, fourierResult.Re[i]);
+        imSeries.Points.AddXY(i, fourierResult.Im[i]);
       }
     }
   }

@@ -5,19 +5,23 @@
   {
     public FourierResult(int m)
     {
-      ReDFT = new double[m];
-      ImDFT = new double[m];
+      Re = new double[m];
+      Im = new double[m];
       ReIDFT = new double[m];
       ImIDFT = new double[m];
-      FourierSpectrum = new double[m];
+      Spectrum = new double[m];
       PowerSpectrum = new double[m];
+      Fx = new double[m];
+      CenteredFx = new double[m];
     }
 
-    public double[] ReDFT { get; set; }           //Действительная часть прямного Фурье-преобразования
-    public double[] ImDFT { get; set; }           //Мнимая часть прямного Фурье-преобразования
+    public double[] Re { get; set; }           //Действительная часть прямного Фурье-преобразования
+    public double[] Im { get; set; }           //Мнимая часть прямного Фурье-преобразования
     public double[] ReIDFT { get; set; }          //Действительная часть обратного Фурье-преобразования
     public double[] ImIDFT { get; set; }          //Мнимая часть обратного Фурье-преобразования
-    public double[] FourierSpectrum { get; set; } //Спектр Фурье преобразования
+    public double[] Spectrum { get; set; } //Спектр Фурье преобразования
     public double[] PowerSpectrum { get; set; }   //Спектр мощности (энергетический спектр)
+    public double[] Fx { get; set; }              //Исходная функция
+    public double[] CenteredFx { get; set; }      //Исходная центрированная функция
   }
 }

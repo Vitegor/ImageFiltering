@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilteringImage2", "Filterin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilteringImage.Test.Fourier", "FilteringImage.Test.Fourier\FilteringImage.Test.Fourier.csproj", "{1553511C-961D-47F2-9B4F-58CE2D593C34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilteringImage.Test.Fourier2D", "FilteringImage.Test.Fourieк2D\FilteringImage.Test.Fourier2D.csproj", "{969B3E1E-4ECA-4627-B575-9160EDDC20F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilteringImage.Test.Fourier2DBitmap", "FilteringImage.Test.Fourier2DBitmap\FilteringImage.Test.Fourier2DBitmap.csproj", "{9FC5B192-F52A-469F-828D-5E3018FB44E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{1553511C-961D-47F2-9B4F-58CE2D593C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1553511C-961D-47F2-9B4F-58CE2D593C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1553511C-961D-47F2-9B4F-58CE2D593C34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{969B3E1E-4ECA-4627-B575-9160EDDC20F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{969B3E1E-4ECA-4627-B575-9160EDDC20F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{969B3E1E-4ECA-4627-B575-9160EDDC20F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{969B3E1E-4ECA-4627-B575-9160EDDC20F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC5B192-F52A-469F-828D-5E3018FB44E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC5B192-F52A-469F-828D-5E3018FB44E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC5B192-F52A-469F-828D-5E3018FB44E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC5B192-F52A-469F-828D-5E3018FB44E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

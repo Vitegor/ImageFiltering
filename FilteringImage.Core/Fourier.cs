@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FilteringImage.Core
 {
@@ -17,37 +18,44 @@ namespace FilteringImage.Core
         n - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult[] DFT2D(double[,] srcFxy, int m = defaultM, int n = defaultN)
+    public static FourierResult[] DFT2D(double[][] srcFxy)
     {
-      int srcFxyLength = srcFxy.Rank;
-      int srcFxyHeight = srcFxy.Length;
-      int maxU = m - 1;
-      int maxV = n - 1;
-      double[,] fxy = new double[m, n];
+      int m = srcFxy[0].Length;
+      int n = srcFxy.Length;
+      int lenght = m - 1;
+      int height = n - 1;
+      double[] fx = new double[m];
+      double[] fxReIm = new double[n];
 
-      FourierResult fxv = new FourierResult(m);
-      FourierResult[] result = new FourierResult[n];
+      List<double[]> fxy = new List<double[]>();
+      FourierResult[] dft = new FourierResult[n];
+      FourierResult[] result = new FourierResult[m];
 
-      for(int x = 0; x <= srcFxyLength - 1; x++)
+      for(int y = 0; y <= height; y++)
       {
-        for(int y = 0; y <= srcFxyHeight - 1; y++)
+        for(int x = 0; x <= lenght; x++)
         {
-          fxy[x, y] = srcFxy[x, y] * Step(x + y);
+          fx[x] = srcFxy[y][x];
         }
+        fxy.Add(fx);
       }
 
-      for(int u = 0; u <= maxU; u++)
+      int counter = 0;
+      foreach(var item in fxy)
       {
-        for(int v = 0; v <= maxV; v++)
+        dft[counter] = DFT(item);
+        counter++;
+      }
+
+      for(int i = 0; i <= lenght; i++) result[i] = new FourierResult(n);
+
+      for(int x = 0; x <= lenght; x++)
+      {
+        for(int y = 0; y <= height; y++)
         {
-          for(int x = 0; x <= maxU; x++)
-          {
-            for(int y = 0; y <= maxV; y++)
-            {
-              
-            }
-          }
+          fxReIm[y] = FxReIm(dft[y].Re[x], dft[y].Im[x]);
         }
+        result[x] = DFT(fxReIm);
       }
 
       return result;
@@ -61,35 +69,44 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult DFT(double[] sourceFx, int m = defaultM)
+    public static FourierResult DFT(double[] sourceFx)
     {
-      int sourceLength = sourceFx.Length;
-      /*
-        Если количество отсчетов меньше чем количество элементов в исходной массиве, то
-        количество отсчетов делаем равным количеству элементов в исходном массиве
-      */
-      m = m < sourceLength ? sourceLength : m;
-      int processingLimit = m - 1;
-      double[] fx = new double[m];
+      int m = sourceFx.Length;
+      int length = m - 1;
 
       FourierResult result = new FourierResult(m);
 
-      for(int i = 0; i <= sourceLength - 1; i++) fx[i] = sourceFx[i]*Step(i);
-
-      for(var u = 0; u <= processingLimit; u++)
+      for(int i = 0; i <= length; i++)
       {
-        for(int x = 0; x <= processingLimit; x++)
+        result.Fx[i] = sourceFx[i];
+        result.CenteredFx[i] = sourceFx[i] * Step(i);
+      }
+
+      for(var u = 0; u <= length; u++)
+      {
+        for(int x = 0; x <= length; x++)
         {
-          result.ReDFT[u] += ReDFT(fx[x], u, x, m);
-          result.ImDFT[u] += ImDFT(fx[x], u, x, m);
-          result.ReIDFT[u] += ReIDFT(result.ReDFT[u], u, x, m);
+          result.Re[u] += Re(result.CenteredFx[x], u, x, m);
+          result.Im[u] += Im(result.CenteredFx[x], u, x, m);
+          result.ReIDFT[u] += ReIDFT(result.Re[u], u, x, m);
           result.ImIDFT[u] += ImIDFT(result.ImIDFT[u], u, x, m);
-          result.FourierSpectrum[u] += FourierSpectrum(result.ReDFT[u], result.ImDFT[u]);
-          result.PowerSpectrum[u] += PowerSpectrum(result.FourierSpectrum[u]);
+          result.Spectrum[u] += Spectrum(result.Re[u], result.Im[u]);
         }
       }
 
       return result;
+    }
+
+    /*
+      Значение функции с действительной и мнимой частью
+
+      Параметры:
+        re - действительная часть
+        im - мнимая часть
+    */
+    private static double FxReIm(double re, double im)
+    {
+      return (re * Math.Cos(0) + im * Math.Sin(0)) - (re * Math.Sin(0) - im * Math.Cos(0));
     }
 
     /*
@@ -102,7 +119,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ReDFT(double fx, int u, int x, int m)
+    private static double Re(double fx, int u, int x, int m)
     {
       return fx * Math.Cos((2 * Math.PI * u * x) / m);
     }
@@ -118,7 +135,7 @@ namespace FilteringImage.Core
             количество частотных отсчетов результата преобразования Фурье
 
     */
-    private static double ImDFT(double fx, int u, int x, int m)
+    private static double Im(double fx, int u, int x, int m)
     {
       return fx * Math.Sin((2 * Math.PI * u * x) / m);
     }
@@ -127,53 +144,53 @@ namespace FilteringImage.Core
       Вычисление значения действительной части обратного дискретного преобразования Фурье.
 
       Параметры:
-        reDFT - значение действительной части прямонго преобразования Фурьре
+        Re - значение действительной части прямонго преобразования Фурьре
         u - индекс частотной области
         x - временной индекс входных отсчетов
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ReIDFT(double reDFT, int u, int x, int m)
+    private static double ReIDFT(double Re, int u, int x, int m)
     {
-      return reDFT * Math.Cos((2 * Math.PI * u * x) / m);
+      return Re * Math.Cos((2 * Math.PI * u * x) / m);
     }
 
     /*
       Вычисление значения мнимой части обратного дискретного преобразования Фурье.
 
       Параметры:
-        imDFT - значение мнимой части прямонго преобразования Фурьре
+        Im - значение мнимой части прямонго преобразования Фурьре
         u - индекс частотной области
         x - временной индекс входных отсчетов
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ImIDFT(double imDFT, int u, int x, int m)
+    private static double ImIDFT(double Im, int u, int x, int m)
     {
-      return imDFT * Math.Sin((2 * Math.PI * u * x) / m);
+      return Im * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
     /*
       Вычисление значения спектра преобразования Фурье.
 
       Параметры:
-        reDFT - значение действительной части прямого дискретного преобразования Фурьре
-        imDFT - значение мнимой части прямого дискретного преобразования Фурьре
+        Re - значение действительной части прямого дискретного преобразования Фурьре
+        Im - значение мнимой части прямого дискретного преобразования Фурьре
     */
-    private static double FourierSpectrum(double reDFT, double imDFT)
+    private static double Spectrum(double Re, double Im)
     {
-      return Math.Sqrt(Math.Pow(reDFT, 2) + Math.Pow(imDFT, 2));
+      return Math.Sqrt(Math.Pow(Re, 2) + Math.Pow(Im, 2));
     }
 
     /*
       Вычисление значения спектра мощности (энергетического спектра).
 
       Параметры:
-        fourierSpectrum - значение спектра преобразования Фурье
+        spectrum - значение спектра преобразования Фурье
     */
-    private static double PowerSpectrum(double fourierSpectrum)
+    private static double PowerSpectrum(double spectrum)
     {
-      return fourierSpectrum * fourierSpectrum;
+      return spectrum * spectrum;
     }
 
     /*
