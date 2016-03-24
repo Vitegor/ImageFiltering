@@ -5,9 +5,6 @@ namespace FilteringImage.Core
 {
   public static class Fourier
   {
-    private const int defaultM = 100;
-    private const int defaultN = 100;
-
     /*
       Двумерное дискретное преобразование Фурье
 
@@ -18,45 +15,52 @@ namespace FilteringImage.Core
         n - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult[] DFT2D(double[][] srcFxy)
+    public static FourierResult[] DFT2D(double[,] fxy)
     {
-      int m = srcFxy[0].Length;
-      int n = srcFxy.Length;
-      int lenght = m - 1;
+      int m = fxy.GetLength(1); //Количество столбцов
+      int n = fxy.GetLength(0); //Количество строк
+      int length = m - 1;
       int height = n - 1;
-      double[] fx = new double[m];
-      double[] fxReIm = new double[n];
 
-      List<double[]> fxy = new List<double[]>();
-      FourierResult[] dft = new FourierResult[n];
-      FourierResult[] result = new FourierResult[m];
+      FourierResult[] result = new FourierResult[n];
+
+      for(int i = 0; i <= height; i++)
+        result[i] = new FourierResult(m);
+
+      double[,] reRow = new double[n, m];
+      double[,] imRow = new double[n, m];
+      double[,] reCol = new double[n, m];
+      double[,] imCol = new double[n, m];
 
       for(int y = 0; y <= height; y++)
       {
-        for(int x = 0; x <= lenght; x++)
+        for(int u = 0; u <= length; u++)
         {
-          fx[x] = srcFxy[y][x];
+          for(int x = 0; x <= length; x++)
+          {
+            reRow[y, x] += Re(fxy[y, x], u, x, m);
+            imRow[y, x] += Im(fxy[y, x], u, x, m);
+            result[y].Re[u] = reRow[y, x];
+            result[y].Im[u] = imRow[y, x];
+            result[y].Spectrum[u] += Spectrum(result[y].Re[u], result[y].Im[u]);
+          }
         }
-        fxy.Add(fx);
       }
 
-      int counter = 0;
-      foreach(var item in fxy)
-      {
-        dft[counter] = DFT(item);
-        counter++;
-      }
-
-      for(int i = 0; i <= lenght; i++) result[i] = new FourierResult(n);
-
-      for(int x = 0; x <= lenght; x++)
-      {
-        for(int y = 0; y <= height; y++)
-        {
-          fxReIm[y] = FxReIm(dft[y].Re[x], dft[y].Im[x]);
-        }
-        result[x] = DFT(fxReIm);
-      }
+      #region CODE
+      //for(int x = 0; x <= length; x++)
+      //{
+      //  for(int u = 0; u <= height; u++)
+      //  {
+      //    for(int y = 0; y <= height; y++)
+      //    {
+      //      result[y].Re[x] += ReComplex(reRow[y, x], imRow[y, x], y, u, n);
+      //      result[y].Im[x] += ImComplex(reRow[y, x], imRow[y, x], y, u, n);
+      //      result[y].Spectrum[x] += Spectrum(result[y].Re[x], result[y].Im[x]);
+      //    }
+      //  }
+      //}
+      #endregion
 
       return result;
     }
@@ -79,7 +83,7 @@ namespace FilteringImage.Core
       for(int i = 0; i <= length; i++)
       {
         result.Fx[i] = sourceFx[i];
-        result.CenteredFx[i] = sourceFx[i] * Step(i);
+        result.CenteredFx[i] = sourceFx[i];
       }
 
       for(var u = 0; u <= length; u++)
@@ -95,18 +99,6 @@ namespace FilteringImage.Core
       }
 
       return result;
-    }
-
-    /*
-      Значение функции с действительной и мнимой частью
-
-      Параметры:
-        re - действительная часть
-        im - мнимая часть
-    */
-    private static double FxReIm(double re, double im)
-    {
-      return (re * Math.Cos(0) + im * Math.Sin(0)) - (re * Math.Sin(0) - im * Math.Cos(0));
     }
 
     /*
@@ -138,6 +130,16 @@ namespace FilteringImage.Core
     private static double Im(double fx, int u, int x, int m)
     {
       return fx * Math.Sin((2 * Math.PI * u * x) / m);
+    }
+
+    private static double ReComplex(double re, double im, int y, int u, int n)
+    {
+      return ((re * Math.Cos(2 * Math.PI * y * u)) / (n)) + ((im * Math.Sin(2 * Math.PI * y * u)) / (n));
+    }
+
+    private static double ImComplex(double re, double im, int y, int u, int n)
+    {
+      return ((im * Math.Cos(2 * Math.PI * y * u)) / (n)) - ((re * Math.Sin(2 * Math.PI * y * u)) / (n));
     }
 
     /*

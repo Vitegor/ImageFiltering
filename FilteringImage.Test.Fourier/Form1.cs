@@ -23,15 +23,20 @@ namespace FilteringImage.Test.Fourier
     {
       SeriesChartType CHART_TYPE = SeriesChartType.Spline;
       int LINE_WIDTH = 3;
-      double[] fx = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-      int m  = fx.Length;
+      int m = 15;
       int length = m - 1;
-      Core.FourierResult fourierResult = Core.Fourier.DFT(fx);
+      double[] fx = new double[m];
 
       Series sourceSeries = chartSource.Series.Add("Исходный сигнал");
       Series spectrumSeries = chartSpectrum.Series.Add("Спектр преобразования Фурье");
       Series reSeries = chartRe.Series.Add("Действительная часть");
       Series imSeries = chartIm.Series.Add("Мнимая часть");
+
+      for(int i = 0; i <= length; i++) fx[i] = 1;
+      for(int i = 0; i <= length; i++) sourceSeries.Points.AddXY(i, fx[i]);
+      for(int i = 0; i <= length; i++) fx[i] = fx[i] * Core.Fourier.Step(i);
+
+      Core.FourierResult fourierResult = Core.Fourier.DFT(fx);
 
       chartSource.Series[0].ChartType = CHART_TYPE;
       chartSpectrum.Series[0].ChartType = CHART_TYPE;
@@ -42,11 +47,6 @@ namespace FilteringImage.Test.Fourier
       chartSpectrum.Series[0].BorderWidth = LINE_WIDTH;
       chartRe.Series[0].BorderWidth = LINE_WIDTH;
       chartIm.Series[0].BorderWidth = LINE_WIDTH;
-
-      for(byte i = 0; i <= length; i++)
-      {
-        sourceSeries.Points.AddXY(i, fx[i]);
-      }
 
       for(int i = 0; i <= length; i++)
       {
