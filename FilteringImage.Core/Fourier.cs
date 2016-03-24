@@ -24,21 +24,21 @@ namespace FilteringImage.Core
 
       #region Преобразование Фурье по строкам
 
-        FourierResult[] rowResult = new FourierResult[n];
-        double[] fx = new double[m];
+      FourierResult[] rowResult = new FourierResult[n];
+      double[] fx = new double[m];
 
-        for(int y = 0; y <= height; y++)
+      for(int y = 0; y <= height; y++)
+      {
+        for(int x = 0; x <= length; x++)
         {
-          for(int x = 0; x <= length; x++) //Набираем значения функции по строкам
-          {
-            fx[x] = fxy[y, x];
-          }
-          rowResult[y] = DFT(fx);
+          fx[x] = fxy[y, x]; //Набираем значения функции по строкам
         }
+        rowResult[y] = DFT(fx);
+      }
 
       #endregion
 
-      #region Преобразование Фурье по столбцам (получаем отраженную матрицу значений)
+      #region Преобразование Фурье по столбцам
 
       FourierResult[] colResult = new FourierResult[m];
       double[] re = new double[n];
@@ -52,7 +52,7 @@ namespace FilteringImage.Core
           re[y] = rowResult[y].Re[x];
           im[y] = rowResult[y].Im[x];
         }
-        colResult[x] = ComplexDFT(re, im);
+        colResult[x] = ComplexDFT(re, im); //Получаем отраженную матрицу значений
       }
 
       #endregion
@@ -97,8 +97,8 @@ namespace FilteringImage.Core
         {
           result.Re[u] += Re(fx[x], u, x, m);
           result.Im[u] += Im(fx[x], u, x, m);
-          result.Spectrum[u] += Spectrum(result.Re[u], result.Im[u]);
         }
+        result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
       }
 
       return result;
@@ -114,10 +114,10 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= length; x++)
         {
-          result.Re[x] += ComplexRe(re[x], im[x], u, x, m);
-          result.Im[x] += ComplexIm(re[x], im[x], u, x, m);
-          result.Spectrum[x] += Spectrum(result.Re[x], result.Im[x]);
+          result.Re[u] += ComplexRe(re[x], im[x], u, x, m);
+          result.Im[u] += ComplexIm(re[x], im[x], u, x, m);
         }
+        result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
       }
 
       return result;
