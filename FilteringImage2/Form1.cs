@@ -35,6 +35,7 @@ namespace FilteringImage2
         btnResetImage.Enabled = true;
         grboxColorChannel.Enabled = true;
         grboxNoise.Enabled = true;
+        DrowSourceSpectrum(sourceBitmap);
       }
     }
 
@@ -76,6 +77,47 @@ namespace FilteringImage2
     {
       //Bitmap bitmap = new Bitmap(resultImage.Image);
       //resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap);
+    }
+
+    private void DrowSourceSpectrum(Bitmap bitmap)
+    {
+      int m = bitmap.Width;
+      int n = bitmap.Height;
+      int length = m - 1;
+      int height = n - 1;
+      int r, g, b;
+
+      double[,] fxy = new double[n, m];
+
+      for(int y = 0; y < height; y++)
+      {
+        for(int x = 0; x < length; x++)
+        {
+          r = bitmap.GetPixel(x, y).R;
+          g = bitmap.GetPixel(x, y).G;
+          b = bitmap.GetPixel(x, y).B;
+          fxy[y, x] = 0.2125 * r + 0.7154 * g + 0.0721 * b;
+        }
+      }
+      FourierResult[] result = new FourierResult[n];
+      result = Fourier.DFT2D(fxy);
+
+      int rx, ry = 0;
+      byte gray = 0;
+
+      foreach(var row in result)
+      {
+        rx = 0;
+        foreach(var item in row.Spectrum)
+        {
+          gray = ColorChannel.ToGray(item, item, item);
+          bitmap.SetPixel(rx, ry, Color.FromArgb(gray, gray, gray));
+          rx++;
+        }
+        ry++;
+      }
+
+      srcImgSpectrum.Image = bitmap;
     }
   }
 }

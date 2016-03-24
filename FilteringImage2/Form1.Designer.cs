@@ -28,10 +28,8 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       this.resultImage = new System.Windows.Forms.PictureBox();
       this.sourceImage = new System.Windows.Forms.PictureBox();
       this.grboxColorChannel = new System.Windows.Forms.GroupBox();
@@ -52,19 +50,19 @@
       this.btnAddNoiseUnipolarPepper = new System.Windows.Forms.Button();
       this.btnAddNoiseBipolar = new System.Windows.Forms.Button();
       this.btnAddNoiseUnipolarSalt = new System.Windows.Forms.Button();
-      this.chartSourceSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.chartResultSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
+      this.srcImgSpectrum = new System.Windows.Forms.PictureBox();
       ((System.ComponentModel.ISupportInitialize)(this.resultImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       this.grboxColorChannel.SuspendLayout();
       this.grboxNoise.SuspendLayout();
       this.panel1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.chartSourceSpectrum)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chartResultSpectrum)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).BeginInit();
       this.SuspendLayout();
       // 
       // resultImage
@@ -272,24 +270,12 @@
       this.btnAddNoiseUnipolarSalt.UseVisualStyleBackColor = true;
       this.btnAddNoiseUnipolarSalt.Click += new System.EventHandler(this.btnAddNoiseUnipolarSalt_Click);
       // 
-      // chartSourceSpectrum
-      // 
-      chartArea3.Name = "ChartArea1";
-      this.chartSourceSpectrum.ChartAreas.Add(chartArea3);
-      legend3.Name = "Legend1";
-      this.chartSourceSpectrum.Legends.Add(legend3);
-      this.chartSourceSpectrum.Location = new System.Drawing.Point(484, 30);
-      this.chartSourceSpectrum.Name = "chartSourceSpectrum";
-      this.chartSourceSpectrum.Size = new System.Drawing.Size(450, 274);
-      this.chartSourceSpectrum.TabIndex = 17;
-      this.chartSourceSpectrum.Text = "chart1";
-      // 
       // chartResultSpectrum
       // 
-      chartArea4.Name = "ChartArea1";
-      this.chartResultSpectrum.ChartAreas.Add(chartArea4);
-      legend4.Name = "Legend1";
-      this.chartResultSpectrum.Legends.Add(legend4);
+      chartArea1.Name = "ChartArea1";
+      this.chartResultSpectrum.ChartAreas.Add(chartArea1);
+      legend1.Name = "Legend1";
+      this.chartResultSpectrum.Legends.Add(legend1);
       this.chartResultSpectrum.Location = new System.Drawing.Point(484, 326);
       this.chartResultSpectrum.Name = "chartResultSpectrum";
       this.chartResultSpectrum.Size = new System.Drawing.Size(450, 290);
@@ -336,17 +322,27 @@
       this.label4.TabIndex = 22;
       this.label4.Text = "Result Spectrum";
       // 
+      // srcImgSpectrum
+      // 
+      this.srcImgSpectrum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.srcImgSpectrum.Location = new System.Drawing.Point(484, 29);
+      this.srcImgSpectrum.Name = "srcImgSpectrum";
+      this.srcImgSpectrum.Size = new System.Drawing.Size(450, 275);
+      this.srcImgSpectrum.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.srcImgSpectrum.TabIndex = 23;
+      this.srcImgSpectrum.TabStop = false;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1184, 634);
+      this.Controls.Add(this.srcImgSpectrum);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.chartResultSpectrum);
-      this.Controls.Add(this.chartSourceSpectrum);
       this.Controls.Add(this.grboxNoise);
       this.Controls.Add(this.grboxColorChannel);
       this.Controls.Add(this.btnResetImage);
@@ -362,8 +358,8 @@
       this.grboxColorChannel.PerformLayout();
       this.grboxNoise.ResumeLayout(false);
       this.panel1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.chartSourceSpectrum)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chartResultSpectrum)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -391,12 +387,12 @@
     private System.Windows.Forms.Button btnAddNoiseUnipolarPepper;
     private System.Windows.Forms.Button btnAddNoiseBipolar;
     private System.Windows.Forms.Button btnAddNoiseUnipolarSalt;
-    private System.Windows.Forms.DataVisualization.Charting.Chart chartSourceSpectrum;
     private System.Windows.Forms.DataVisualization.Charting.Chart chartResultSpectrum;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.PictureBox srcImgSpectrum;
   }
 }
 

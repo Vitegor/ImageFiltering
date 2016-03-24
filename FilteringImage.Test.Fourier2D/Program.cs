@@ -20,7 +20,7 @@ namespace FilteringImage.Test.Fourier2D
 
       for(int i = 0; i <= n - 1; i++)
       {
-        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Fourier.Step(j);
+        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1;
       }
 
       PrintArray(fxy);
@@ -30,30 +30,16 @@ namespace FilteringImage.Test.Fourier2D
         for(int j = 0; j <= m - 1; j++) fxy[i, j] = fxy[i, j] * Fourier.Step(j);
       }
 
-      PrintArray(fxy);
-
       FourierResult[] result = Fourier.DFT2D(fxy);
 
       double[] fx = new double[m];
       for(int i = 0; i <= m - 1; i++) fx[i] = fxy[0, i];
 
-      FourierResult[] test = new FourierResult[n];
-      for(int i = 0; i <= m - 1; i++) test[i] = Fourier.DFT(fx);
-
-      Console.WriteLine("========== Действительная часть ==========");
-      PrintRe(test);
-
       Console.WriteLine("========== Действительная часть (2D) ==========");
       PrintRe(result);
 
-      Console.WriteLine("========== Мнимая часть ==========");
-      PrintIm(test);
-
       Console.WriteLine("========== Мнимая часть (2D) ==========");
       PrintIm(result);
-
-      Console.WriteLine("========== Спектр ==========");
-      PrintSpectrum(test);
 
       Console.WriteLine("==========Спектр (2D) ==========");
       PrintSpectrum(result);
@@ -61,14 +47,13 @@ namespace FilteringImage.Test.Fourier2D
 
     private static void PrintArray(double[,] array)
     {
-      int length = array.GetLength(1) - 1;
-      int height = array.GetLength(0) - 1;
+      int length = array.GetLength(0) - 1;
+      int height = array.GetLength(1) - 1;
 
       for(int i = 0; i <= length; i++)
       {
         for(int j = 0; j <= height; j++)
         {
-          array[i, j] = 1;
           Console.Write("{0} ", array[i, j]);
         }
         Console.WriteLine();

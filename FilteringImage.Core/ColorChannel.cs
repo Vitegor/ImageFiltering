@@ -142,5 +142,15 @@ namespace FilteringImage.Core
       return bitmap;
     }
     #endregion
+
+    public static byte ToGray(double red, double green, double blue)
+    {
+      double MAX_BYTE = 255;
+      red = red > MAX_BYTE ? MAX_BYTE : red;
+      green = green > MAX_BYTE ? MAX_BYTE : green;
+      blue = blue > MAX_BYTE ? MAX_BYTE : blue;
+
+      return (byte)(0.2125 * red + 0.7154 * green + 0.0721 * blue);
+    }
   }
 }

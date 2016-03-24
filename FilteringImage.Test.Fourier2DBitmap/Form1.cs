@@ -21,38 +21,34 @@ namespace FilteringImage.Test.Fourier2DBitmap
     private void Form1_Load(object sender, EventArgs e)
     {
       int m = 150;
-      int n = 90;
+      int n = 150;
 
-      double[,] a = new double[n, m];
+      double[,] fxy = new double[n, m];
       FourierResult[] result = new FourierResult[n];
 
       Console.WriteLine("========== Исходная функция ==========");
       for(int i = 0; i <= n - 1; i++)
       {
-        for(int j = 0; j <= m - 1; j++)
-        {
-          a[i, j] = 1 * Core.Fourier.Step(i + j);
-        }
+        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Fourier.Step(j);
       }
 
-      result = Fourier.DFT2D(a);
+      result = Fourier.DFT2D(fxy);
       Bitmap bm = new Bitmap(m, n);
 
-
       Console.WriteLine("========== Спектр ==========");
-      int x = 0;
-      double temp;
+      int x, y = 0;
       byte gray = 0;
-      for(int y = 0; y <= n - 1; y++)
+
+      foreach(var row in result)
       {
         x = 0;
-        foreach(var item in result[y].Spectrum)
+        foreach(var item in row.Spectrum)
         {
-          temp = item > 255 ? 255 : item;
-          gray = (byte)(0.2125 * temp + 0.7154 * temp + 0.0721 * temp);
+          gray = ColorChannel.ToGray(item, item, item);
           bm.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
           x++;
         }
+        y++;
       }
 
       pictureBox1.Image = bm;

@@ -22,47 +22,58 @@ namespace FilteringImage.Core
       int length = m - 1;
       int height = n - 1;
 
-      FourierResult[] result = new FourierResult[n];
+      #region Преобразование Фурье по строкам
 
-      for(int i = 0; i <= height; i++)
-        result[i] = new FourierResult(m);
+        FourierResult[] rowResult = new FourierResult[n];
+        double[] fx = new double[m];
 
-      double[,] reRow = new double[n, m];
-      double[,] imRow = new double[n, m];
-      double[,] reCol = new double[n, m];
-      double[,] imCol = new double[n, m];
-
-      for(int y = 0; y <= height; y++)
-      {
-        for(int u = 0; u <= length; u++)
+        for(int y = 0; y <= height; y++)
         {
-          for(int x = 0; x <= length; x++)
+          for(int x = 0; x <= length; x++) //Набираем значения функции по строкам
           {
-            reRow[y, x] += Re(fxy[y, x], u, x, m);
-            imRow[y, x] += Im(fxy[y, x], u, x, m);
-            result[y].Re[u] = reRow[y, x];
-            result[y].Im[u] = imRow[y, x];
-            result[y].Spectrum[u] += Spectrum(result[y].Re[u], result[y].Im[u]);
+            fx[x] = fxy[y, x];
           }
+          rowResult[y] = DFT(fx);
         }
-      }
 
-      #region CODE
-      //for(int x = 0; x <= length; x++)
-      //{
-      //  for(int u = 0; u <= height; u++)
-      //  {
-      //    for(int y = 0; y <= height; y++)
-      //    {
-      //      result[y].Re[x] += ReComplex(reRow[y, x], imRow[y, x], y, u, n);
-      //      result[y].Im[x] += ImComplex(reRow[y, x], imRow[y, x], y, u, n);
-      //      result[y].Spectrum[x] += Spectrum(result[y].Re[x], result[y].Im[x]);
-      //    }
-      //  }
-      //}
       #endregion
 
-      return result;
+      //#region Преобразование Фурье по столбцам (получаем отраженную матрицу значений)
+
+      //FourierResult[] colResult = new FourierResult[m];
+      //double[] re = new double[n];
+      //double[] im = new double[n];
+
+      //for(int x = 0; x <= length; x++)
+      //{
+      //  //Набираем значения действительной и мнимой частей по столбцам
+      //  for(int y = 0; y <= height; y++)
+      //  {
+      //    re[y] = rowResult[y].Re[x];
+      //    im[y] = rowResult[y].Im[x];
+      //  }
+      //  colResult[x] = ComplexDFT(re, im);
+      //}
+
+      //#endregion
+
+      //#region Обратное отражение результата преобразования Фурье по столбцам
+
+      //for(int x = 0; x <= length; x++)
+      //{
+      //  for(int y = 0; y <= height; y++)
+      //  {
+      //    /* Значение помещаем в массив результатов по строкам т.к. как он соответствует
+      //    размерам исходной функции */
+      //    rowResult[y].Re[x] = colResult[x].Re[y];
+      //    rowResult[y].Im[x] = colResult[x].Im[y];
+      //    rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
+      //  }
+      //}
+
+      //#endregion
+
+      return rowResult;
     }
 
     /*
@@ -73,28 +84,39 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    public static FourierResult DFT(double[] sourceFx)
+    public static FourierResult DFT(double[] fx)
     {
-      int m = sourceFx.Length;
+      int m = fx.Length;
       int length = m - 1;
 
       FourierResult result = new FourierResult(m);
-
-      for(int i = 0; i <= length; i++)
-      {
-        result.Fx[i] = sourceFx[i];
-        result.CenteredFx[i] = sourceFx[i];
-      }
 
       for(var u = 0; u <= length; u++)
       {
         for(int x = 0; x <= length; x++)
         {
-          result.Re[u] += Re(result.CenteredFx[x], u, x, m);
-          result.Im[u] += Im(result.CenteredFx[x], u, x, m);
-          result.ReIDFT[u] += ReIDFT(result.Re[u], u, x, m);
-          result.ImIDFT[u] += ImIDFT(result.ImIDFT[u], u, x, m);
+          result.Re[u] += Re(fx[x], u, x, m);
+          result.Im[u] += Im(fx[x], u, x, m);
           result.Spectrum[u] += Spectrum(result.Re[u], result.Im[u]);
+        }
+      }
+
+      return result;
+    }
+
+    public static FourierResult ComplexDFT(double[] re, double[] im)
+    {
+      int m = re.Length;
+      int length = m - 1;
+      FourierResult result = new FourierResult(m);
+
+      for(int u = 0; u <= length; u++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          result.Re[x] += ComplexRe(re[x], im[x], u, x, m);
+          result.Im[x] += ComplexIm(re[x], im[x], u, x, m);
+          result.Spectrum[x] += Spectrum(result.Re[x], result.Im[x]);
         }
       }
 
@@ -132,14 +154,18 @@ namespace FilteringImage.Core
       return fx * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
-    private static double ReComplex(double re, double im, int y, int u, int n)
+    private static double ComplexRe(double re, double im, int u, int x, int m)
     {
-      return ((re * Math.Cos(2 * Math.PI * y * u)) / (n)) + ((im * Math.Sin(2 * Math.PI * y * u)) / (n));
+      return
+        ((re * Math.Cos(2 * Math.PI * x * u)) / (m)) +
+        ((im * Math.Sin(2 * Math.PI * x * u)) / (m));
     }
 
-    private static double ImComplex(double re, double im, int y, int u, int n)
+    private static double ComplexIm(double re, double im, int u, int x, int m)
     {
-      return ((im * Math.Cos(2 * Math.PI * y * u)) / (n)) - ((re * Math.Sin(2 * Math.PI * y * u)) / (n));
+      return
+        ((im * Math.Cos(2 * Math.PI * x * u)) / (m)) -
+        ((re * Math.Sin(2 * Math.PI * x * u)) / (m));
     }
 
     /*
@@ -152,7 +178,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ReIDFT(double Re, int u, int x, int m)
+    private static double InvertRe(double Re, int u, int x, int m)
     {
       return Re * Math.Cos((2 * Math.PI * u * x) / m);
     }
@@ -167,7 +193,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ImIDFT(double Im, int u, int x, int m)
+    private static double InvertIm(double Im, int u, int x, int m)
     {
       return Im * Math.Sin((2 * Math.PI * u * x) / m);
     }
