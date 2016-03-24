@@ -38,40 +38,40 @@ namespace FilteringImage.Core
 
       #endregion
 
-      //#region Преобразование Фурье по столбцам (получаем отраженную матрицу значений)
+      #region Преобразование Фурье по столбцам (получаем отраженную матрицу значений)
 
-      //FourierResult[] colResult = new FourierResult[m];
-      //double[] re = new double[n];
-      //double[] im = new double[n];
+      FourierResult[] colResult = new FourierResult[m];
+      double[] re = new double[n];
+      double[] im = new double[n];
 
-      //for(int x = 0; x <= length; x++)
-      //{
-      //  //Набираем значения действительной и мнимой частей по столбцам
-      //  for(int y = 0; y <= height; y++)
-      //  {
-      //    re[y] = rowResult[y].Re[x];
-      //    im[y] = rowResult[y].Im[x];
-      //  }
-      //  colResult[x] = ComplexDFT(re, im);
-      //}
+      for(int x = 0; x <= length; x++)
+      {
+        //Набираем значения действительной и мнимой частей по столбцам
+        for(int y = 0; y <= height; y++)
+        {
+          re[y] = rowResult[y].Re[x];
+          im[y] = rowResult[y].Im[x];
+        }
+        colResult[x] = ComplexDFT(re, im);
+      }
 
-      //#endregion
+      #endregion
 
-      //#region Обратное отражение результата преобразования Фурье по столбцам
+      #region Обратное отражение результата преобразования Фурье по столбцам
 
-      //for(int x = 0; x <= length; x++)
-      //{
-      //  for(int y = 0; y <= height; y++)
-      //  {
-      //    /* Значение помещаем в массив результатов по строкам т.к. как он соответствует
-      //    размерам исходной функции */
-      //    rowResult[y].Re[x] = colResult[x].Re[y];
-      //    rowResult[y].Im[x] = colResult[x].Im[y];
-      //    rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
-      //  }
-      //}
+      for(int x = 0; x <= length; x++)
+      {
+        for(int y = 0; y <= height; y++)
+        {
+          /* Значение помещаем в массив результатов по строкам т.к. как он соответствует
+          размерам исходной функции */
+          rowResult[y].Re[x] = colResult[x].Re[y];
+          rowResult[y].Im[x] = colResult[x].Im[y];
+          rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
+        }
+      }
 
-      //#endregion
+      #endregion
 
       return rowResult;
     }
