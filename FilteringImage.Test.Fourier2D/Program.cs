@@ -12,8 +12,10 @@ namespace FilteringImage.Test.Fourier2D
   {
     static void Main(string[] args)
     {
-      int m = 15;
-      int n = 15;
+      int m = 5;
+      int n = 5;
+      if(!Fourier.IsEven(m)) m = m - 1;
+      if(!Fourier.IsEven(n)) n = n - 1;
       double[,] fxy = new double[n,m];
 
       Console.WriteLine("========== Исходная функция ==========");
@@ -27,7 +29,7 @@ namespace FilteringImage.Test.Fourier2D
 
       for(int i = 0; i <= n - 1; i++)
       {
-        for(int j = 0; j <= m - 1; j++) fxy[i, j] = fxy[i, j] * Fourier.Step(j);
+        for(int j = 0; j <= m - 1; j++) fxy[i, j] = fxy[i, j] * Fourier.Step(i + j);
       }
 
       FourierResult[] result = Fourier.DFT2D(fxy);

@@ -21,7 +21,7 @@ namespace FilteringImage.Test.Fourier2DBitmap
     private void Form1_Load(object sender, EventArgs e)
     {
       int m = 150;
-      int n = 150;
+      int n = 180;
 
       double[,] fxy = new double[n, m];
       FourierResult[] result = new FourierResult[n];
@@ -29,7 +29,7 @@ namespace FilteringImage.Test.Fourier2DBitmap
       Console.WriteLine("========== Исходная функция ==========");
       for(int i = 0; i <= n - 1; i++)
       {
-        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Fourier.Step(j);
+        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Fourier.Step(i + j);
       }
 
       result = Fourier.DFT2D(fxy);

@@ -85,7 +85,8 @@ namespace FilteringImage2
       int n = bitmap.Height;
       int length = m - 1;
       int height = n - 1;
-      int r, g, b;
+      byte gray;
+      Bitmap bm = new Bitmap(m, n);
 
       double[,] fxy = new double[n, m];
 
@@ -93,17 +94,22 @@ namespace FilteringImage2
       {
         for(int x = 0; x < length; x++)
         {
-          r = bitmap.GetPixel(x, y).R;
-          g = bitmap.GetPixel(x, y).G;
-          b = bitmap.GetPixel(x, y).B;
-          fxy[y, x] = 0.2125 * r + 0.7154 * g + 0.0721 * b;
+          gray = ColorChannel.ToGray(
+              bitmap.GetPixel(x, y).R,
+              bitmap.GetPixel(x, y).G,
+              bitmap.GetPixel(x, y).B);
+
+          fxy[y, x] = gray * Fourier.Step(x + y);
+          bm.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
         }
       }
+
+      resultImage.Image = bm;
+
       FourierResult[] result = new FourierResult[n];
       result = Fourier.DFT2D(fxy);
 
       int rx, ry = 0;
-      byte gray = 0;
 
       foreach(var row in result)
       {

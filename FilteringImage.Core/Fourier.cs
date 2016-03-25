@@ -157,15 +157,15 @@ namespace FilteringImage.Core
     private static double ComplexRe(double re, double im, int u, int x, int m)
     {
       return
-        ((re * Math.Cos(2 * Math.PI * x * u)) / (m)) +
-        ((im * Math.Sin(2 * Math.PI * x * u)) / (m));
+        re * Math.Cos((2 * Math.PI * x * u) / m) +
+        im * Math.Sin((2 * Math.PI * x * u) / m);
     }
 
     private static double ComplexIm(double re, double im, int u, int x, int m)
     {
       return
-        ((im * Math.Cos(2 * Math.PI * x * u)) / (m)) -
-        ((re * Math.Sin(2 * Math.PI * x * u)) / (m));
+        im * Math.Cos((2 * Math.PI * x * u) / m) -
+        re * Math.Sin((2 * Math.PI * x * u) / m);
     }
 
     /*
@@ -227,7 +227,7 @@ namespace FilteringImage.Core
       Параметры:
         n - степень
     */
-    public static int Step(int n) { return 1 - 2 * (!isEven(n) ? 1 : 0); }
+    public static int Step(int n) { return 1 - 2 * (!IsEven(n) ? 1 : 0); }
 
     /*
       Проверка числа на четность.
@@ -235,7 +235,7 @@ namespace FilteringImage.Core
       Параметры:
         х - число, проверяемое на четность
     */
-    private static bool isEven(double x)
+    public static bool IsEven(double x)
     {
       return x % 2 == 0;
     }
