@@ -34,7 +34,7 @@ namespace FilteringImage.Test.Fourier
 
       for(int i = 0; i <= length; i++) fx[i] = 1;
       for(int i = 0; i <= length; i++) sourceSeries.Points.AddXY(i, fx[i]);
-      for(int i = 0; i <= length; i++) fx[i] = fx[i] * Core.Fourier.Step(i);
+      for(int i = 0; i <= length; i++) fx[i] = fx[i] * Core.Helpers.Step(i);
 
       Core.FourierResult fourierResult = Core.Fourier.DFT(fx);
 

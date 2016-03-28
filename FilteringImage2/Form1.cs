@@ -98,13 +98,13 @@ namespace FilteringImage2
     //Отрисовка спектра исходного изображения
     private void DrowSourceSpectrum(Bitmap bitmap)
     {
-      srcImgSpectrum.Image = Helpers.GetImageSpectrum(bitmap, RGBChannel.Gray);
+      srcImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap, RGBChannel.Gray);
     }
 
     //Отрисовка спектра отфильтрованного изображения
     private void DrowFilteredImageSpectrum(Bitmap bitmap)
     {
-      resultImgSpectrum.Image = Helpers.GetImageSpectrum(bitmap, RGBChannel.Gray);
+      resultImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap, RGBChannel.Gray);
     }
 
     //Получение текущего выбранного цветового канала

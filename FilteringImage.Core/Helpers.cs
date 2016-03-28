@@ -9,32 +9,7 @@ namespace FilteringImage.Core
 {
   public static class Helpers
   {
-    public static Bitmap GetImageSpectrum(Bitmap bitmap, RGBChannel colorChannel)
-    {
-      bitmap = GetImageInColorScale(bitmap, colorChannel);
-      double[,] fxy = GetBitmapFunction(bitmap, colorChannel);
-
-      FourierResult[] fourierResult = Fourier.DFT2D(fxy);
-
-      int x, y = 0;
-      byte gray;
-
-      foreach(var row in fourierResult)
-      {
-        x = 0;
-        foreach(var item in row.Spectrum)
-        {
-          gray = ColorChannel.ToGray(item, item, item);
-          bitmap.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
-          x++;
-        }
-        y++;
-      }
-
-      return bitmap;
-    }
-
-    private static double[,] GetBitmapFunction(Bitmap bitmap, RGBChannel colorChannel)
+    internal static double[,] GetBitmapFunction(Bitmap bitmap, RGBChannel colorChannel)
     {
       int m = bitmap.Width;
       int n = bitmap.Height;
@@ -53,14 +28,14 @@ namespace FilteringImage.Core
               bitmap.GetPixel(x, y).G,
               bitmap.GetPixel(x, y).B);
 
-          fxy[y, x] = gray * Fourier.Step(x + y);
+          fxy[y, x] = gray * Step(x + y);
         }
       }
 
       return fxy;
     }
 
-    private static Bitmap GetImageInColorScale(Bitmap bitmap, RGBChannel colorChannel)
+    internal static Bitmap GetImageInColorScale(Bitmap bitmap, RGBChannel colorChannel)
     {
       int length = bitmap.Width - 1;
       int height = bitmap.Height - 1;
@@ -80,6 +55,25 @@ namespace FilteringImage.Core
       }
 
       return bitmap;
+    }
+
+    /*
+      Возведение -1 в степень
+
+      Параметры:
+        n - степень
+    */
+    public static int Step(int n) { return 1 - 2 * (!IsEven(n) ? 1 : 0); }
+
+    /*
+      Проверка числа на четность.
+
+      Параметры:
+        х - число, проверяемое на четность
+    */
+    public static bool IsEven(double x)
+    {
+      return x % 2 == 0;
     }
   }
 }

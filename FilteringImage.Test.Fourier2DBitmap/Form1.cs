@@ -29,7 +29,7 @@ namespace FilteringImage.Test.Fourier2DBitmap
       Console.WriteLine("========== Исходная функция ==========");
       for(int i = 0; i <= n - 1; i++)
       {
-        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Fourier.Step(i + j);
+        for(int j = 0; j <= m - 1; j++) fxy[i, j] = 1 * Helpers.Step(i + j);
       }
 
       result = Fourier.DFT2D(fxy);

@@ -130,6 +130,7 @@ namespace FilteringImage.Core
 
     public static Bitmap FilterIdealLowPass(Bitmap bitmap, double? cutOffFrequency = null)
     {
+
       return bitmap;
     }
 

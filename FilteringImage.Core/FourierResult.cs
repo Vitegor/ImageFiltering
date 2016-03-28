@@ -1,21 +1,26 @@
 ﻿namespace FilteringImage.Core
 {
-  //Структура результата для преобразования Фурье
-  public struct FourierResult
+  //Класс результата для прямого преобразования Фурье
+  public class FourierResult : InvertedFourierResult
   {
-    public FourierResult(int m)
+    public FourierResult(int m) : base(m)
     {
-      Re = new double[m];
-      Im = new double[m];
-      ReIDFT = new double[m];
-      ImIDFT = new double[m];
       Spectrum = new double[m];
     }
 
-    public double[] Re { get; set; }           //Действительная часть прямного Фурье-преобразования
-    public double[] Im { get; set; }           //Мнимая часть прямного Фурье-преобразования
-    public double[] ReIDFT { get; set; }          //Действительная часть обратного Фурье-преобразования
-    public double[] ImIDFT { get; set; }          //Мнимая часть обратного Фурье-преобразования
     public double[] Spectrum { get; set; } //Спектр Фурье преобразования
+  }
+
+  //Класс результата для обратного преобразования Фурье
+  public class InvertedFourierResult
+  {
+    public InvertedFourierResult(int m)
+    {
+      Re = new double[m];
+      Im = new double[m];
+    }
+
+    public double[] Re { get; set; }
+    public double[] Im { get; set; }
   }
 }
