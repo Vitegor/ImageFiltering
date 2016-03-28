@@ -53,30 +53,31 @@ namespace FilteringImage2
       }
     }
 
+    //Сброс обрабатываемого изображения в исходное состояние
     private void btnResetImage_Click(object sender, EventArgs e)
     {
       resultImage.Image = sourceImage.Image;
-      chboxChannelRed.Checked = true;
-      chboxChannelGreen.Checked = true;
-      chboxChannelBlue.Checked = true;
     }
 
+    //Добавление биполярного шума
     private void btnAddNoiseBipolar_Click(object sender, EventArgs e)
     {
-      //Bitmap bitmap = new Bitmap(resultImage.Image);
-      //resultImage.Image = Noise.AddBipolarNoise(bitmap);
+      Bitmap bitmap = new Bitmap(resultImage.Image);
+      resultImage.Image = Noise.AddBipolarNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Добавление униполярного соляного шума
     private void btnAddNoiseUnipolarSalt_Click(object sender, EventArgs e)
     {
-      //Bitmap bitmap = new Bitmap(resultImage.Image);
-      //resultImage.Image = Noise.AddUnipolarSaltNoise(bitmap);
+      Bitmap bitmap = new Bitmap(resultImage.Image);
+      resultImage.Image = Noise.AddUnipolarSaltNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Добавление униполярного перечного шума
     private void btnAddNoiseUnipolarPepper_Click(object sender, EventArgs e)
     {
-      //Bitmap bitmap = new Bitmap(resultImage.Image);
-      //resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap);
+      Bitmap bitmap = new Bitmap(resultImage.Image);
+      resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap, GetCurrentColorChannel());
     }
 
     private void DrowSourceSpectrum(Bitmap bitmap)
@@ -124,6 +125,15 @@ namespace FilteringImage2
       }
 
       srcImgSpectrum.Image = bitmap;
+    }
+
+    //Получение текущего выбранного цветового канала
+    private RGBChannel GetCurrentColorChannel()
+    {
+      RGBChannel colorChannel = RGBChannel.Red;
+      if(rdoGreen.Checked) colorChannel = RGBChannel.Green;
+      if(rdoBlue.Checked) colorChannel = RGBChannel.Blue;
+      return colorChannel;
     }
   }
 }
