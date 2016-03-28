@@ -45,6 +45,7 @@
     <Compile Include="Filter.cs" />
     <Compile Include="Fourier.cs" />
     <Compile Include="FourierResult.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="ImageFormatSettings.cs" />
     <Compile Include="Noise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

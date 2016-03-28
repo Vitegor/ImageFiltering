@@ -35,6 +35,7 @@ namespace FilteringImage2
         btnResetImage.Enabled = true;
         grboxColorChannel.Enabled = true;
         grboxNoise.Enabled = true;
+        grboxFiltering.Enabled = true;
         DrowSourceSpectrum(sourceBitmap);
       }
     }
@@ -80,51 +81,30 @@ namespace FilteringImage2
       resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap, GetCurrentColorChannel());
     }
 
+    //Применение Идеального фильтра низких частот
+    private void btnLowPassFilter_Click(object sender, EventArgs e)
+    {
+      resultImage.Image = Filter.FilterIdealLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      DrowFilteredImageSpectrum(new Bitmap(resultImage.Image));
+    }
+
+    //Применение Гауссова фильтра низких частот
+    private void btnGaussLowPassFilter_Click(object sender, EventArgs e)
+    {
+      resultImage.Image = Filter.FilterGaussLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      DrowFilteredImageSpectrum(new Bitmap(resultImage.Image));
+    }
+
+    //Отрисовка спектра исходного изображения
     private void DrowSourceSpectrum(Bitmap bitmap)
     {
-      int m = bitmap.Width;
-      int n = bitmap.Height;
-      int length = m - 1;
-      int height = n - 1;
-      byte gray;
-      Bitmap bm = new Bitmap(m, n);
+      srcImgSpectrum.Image = Helpers.GetImageSpectrum(bitmap, RGBChannel.Gray);
+    }
 
-      double[,] fxy = new double[n, m];
-
-      for(int y = 0; y < height; y++)
-      {
-        for(int x = 0; x < length; x++)
-        {
-          gray = ColorChannel.ToGray(
-              bitmap.GetPixel(x, y).R,
-              bitmap.GetPixel(x, y).G,
-              bitmap.GetPixel(x, y).B);
-
-          fxy[y, x] = gray * Fourier.Step(x + y);
-          bm.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
-        }
-      }
-
-      resultImage.Image = bm;
-
-      FourierResult[] result = new FourierResult[n];
-      result = Fourier.DFT2D(fxy);
-
-      int rx, ry = 0;
-
-      foreach(var row in result)
-      {
-        rx = 0;
-        foreach(var item in row.Spectrum)
-        {
-          gray = ColorChannel.ToGray(item, item, item);
-          bitmap.SetPixel(rx, ry, Color.FromArgb(gray, gray, gray));
-          rx++;
-        }
-        ry++;
-      }
-
-      srcImgSpectrum.Image = bitmap;
+    //Отрисовка спектра отфильтрованного изображения
+    private void DrowFilteredImageSpectrum(Bitmap bitmap)
+    {
+      resultImgSpectrum.Image = Helpers.GetImageSpectrum(bitmap, RGBChannel.Gray);
     }
 
     //Получение текущего выбранного цветового канала
@@ -134,6 +114,12 @@ namespace FilteringImage2
       if(rdoGreen.Checked) colorChannel = RGBChannel.Green;
       if(rdoBlue.Checked) colorChannel = RGBChannel.Blue;
       return colorChannel;
+    }
+
+    //Получение введенной частоты среза
+    private double GetCurrentCutOffFrequency()
+    {
+      return Convert.ToDouble(txtCutOffFrequency.Text);
     }
   }
 }

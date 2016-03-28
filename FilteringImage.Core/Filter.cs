@@ -128,6 +128,16 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
+    public static Bitmap FilterIdealLowPass(Bitmap bitmap, double? cutOffFrequency = null)
+    {
+      return bitmap;
+    }
+
+    public static Bitmap FilterGaussLowPass(Bitmap bitmap, double? cutOffFrequency = null)
+    {
+      return bitmap;
+    }
+
     /*
       Метод, определяющий, находится ли пиксель с текущими координатами в области изображения.
 

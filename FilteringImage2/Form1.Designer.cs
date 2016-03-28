@@ -28,8 +28,6 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       this.resultImage = new System.Windows.Forms.PictureBox();
       this.sourceImage = new System.Windows.Forms.PictureBox();
       this.btnResetImage = new System.Windows.Forms.Button();
@@ -38,15 +36,9 @@
       this.saveImage = new System.Windows.Forms.SaveFileDialog();
       this.openImage = new System.Windows.Forms.OpenFileDialog();
       this.grboxNoise = new System.Windows.Forms.GroupBox();
-      this.panel5 = new System.Windows.Forms.Panel();
-      this.panel4 = new System.Windows.Forms.Panel();
-      this.panel2 = new System.Windows.Forms.Panel();
-      this.panel1 = new System.Windows.Forms.Panel();
-      this.panel3 = new System.Windows.Forms.Panel();
       this.btnAddNoiseUnipolarPepper = new System.Windows.Forms.Button();
       this.btnAddNoiseBipolar = new System.Windows.Forms.Button();
       this.btnAddNoiseUnipolarSalt = new System.Windows.Forms.Button();
-      this.chartResultSpectrum = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
@@ -56,21 +48,32 @@
       this.rdoBlue = new System.Windows.Forms.RadioButton();
       this.rdoGreen = new System.Windows.Forms.RadioButton();
       this.rdoRed = new System.Windows.Forms.RadioButton();
+      this.resultImgSpectrum = new System.Windows.Forms.PictureBox();
+      this.btnLowPassFilter = new System.Windows.Forms.Button();
+      this.grboxFiltering = new System.Windows.Forms.GroupBox();
+      this.txtCutOffFrequency = new System.Windows.Forms.TextBox();
+      this.lblResultImageEnergy = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
+      this.label6 = new System.Windows.Forms.Label();
+      this.btnGaussLowPassFilter = new System.Windows.Forms.Button();
+      this.imgSpectrumFilter = new System.Windows.Forms.PictureBox();
+      this.label5 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.resultImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       this.grboxNoise.SuspendLayout();
-      this.panel1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.chartResultSpectrum)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).BeginInit();
       this.grboxColorChannel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.resultImgSpectrum)).BeginInit();
+      this.grboxFiltering.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.imgSpectrumFilter)).BeginInit();
       this.SuspendLayout();
       // 
       // resultImage
       // 
       this.resultImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.resultImage.Location = new System.Drawing.Point(16, 326);
+      this.resultImage.Location = new System.Drawing.Point(16, 277);
       this.resultImage.Name = "resultImage";
-      this.resultImage.Size = new System.Drawing.Size(450, 290);
+      this.resultImage.Size = new System.Drawing.Size(390, 210);
       this.resultImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.resultImage.TabIndex = 8;
       this.resultImage.TabStop = false;
@@ -80,7 +83,7 @@
       this.sourceImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.sourceImage.Location = new System.Drawing.Point(16, 29);
       this.sourceImage.Name = "sourceImage";
-      this.sourceImage.Size = new System.Drawing.Size(450, 275);
+      this.sourceImage.Size = new System.Drawing.Size(390, 210);
       this.sourceImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.sourceImage.TabIndex = 7;
       this.sourceImage.TabStop = false;
@@ -89,7 +92,7 @@
       // 
       this.btnResetImage.Enabled = false;
       this.btnResetImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnResetImage.Location = new System.Drawing.Point(1001, 60);
+      this.btnResetImage.Location = new System.Drawing.Point(1047, 30);
       this.btnResetImage.Name = "btnResetImage";
       this.btnResetImage.Size = new System.Drawing.Size(123, 30);
       this.btnResetImage.TabIndex = 15;
@@ -101,7 +104,7 @@
       // 
       this.btnSaveImage.Enabled = false;
       this.btnSaveImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnSaveImage.Location = new System.Drawing.Point(1072, 12);
+      this.btnSaveImage.Location = new System.Drawing.Point(941, 29);
       this.btnSaveImage.Name = "btnSaveImage";
       this.btnSaveImage.Size = new System.Drawing.Size(100, 30);
       this.btnSaveImage.TabIndex = 13;
@@ -112,7 +115,7 @@
       // btnGetImage
       // 
       this.btnGetImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnGetImage.Location = new System.Drawing.Point(952, 12);
+      this.btnGetImage.Location = new System.Drawing.Point(835, 29);
       this.btnGetImage.Name = "btnGetImage";
       this.btnGetImage.Size = new System.Drawing.Size(100, 30);
       this.btnGetImage.TabIndex = 12;
@@ -122,79 +125,34 @@
       // 
       // grboxNoise
       // 
-      this.grboxNoise.Controls.Add(this.panel5);
-      this.grboxNoise.Controls.Add(this.panel4);
-      this.grboxNoise.Controls.Add(this.panel2);
-      this.grboxNoise.Controls.Add(this.panel1);
       this.grboxNoise.Controls.Add(this.btnAddNoiseUnipolarPepper);
       this.grboxNoise.Controls.Add(this.btnAddNoiseBipolar);
       this.grboxNoise.Controls.Add(this.btnAddNoiseUnipolarSalt);
       this.grboxNoise.Enabled = false;
-      this.grboxNoise.Location = new System.Drawing.Point(952, 203);
+      this.grboxNoise.Location = new System.Drawing.Point(835, 161);
       this.grboxNoise.Name = "grboxNoise";
-      this.grboxNoise.Size = new System.Drawing.Size(218, 158);
+      this.grboxNoise.Size = new System.Drawing.Size(335, 65);
       this.grboxNoise.TabIndex = 16;
       this.grboxNoise.TabStop = false;
       this.grboxNoise.Text = "Add Noise";
       // 
-      // panel5
-      // 
-      this.panel5.BackColor = System.Drawing.Color.Black;
-      this.panel5.Location = new System.Drawing.Point(171, 38);
-      this.panel5.Name = "panel5";
-      this.panel5.Size = new System.Drawing.Size(15, 15);
-      this.panel5.TabIndex = 14;
-      // 
-      // panel4
-      // 
-      this.panel4.BackColor = System.Drawing.Color.White;
-      this.panel4.Location = new System.Drawing.Point(156, 38);
-      this.panel4.Name = "panel4";
-      this.panel4.Size = new System.Drawing.Size(15, 15);
-      this.panel4.TabIndex = 14;
-      // 
-      // panel2
-      // 
-      this.panel2.BackColor = System.Drawing.Color.Black;
-      this.panel2.Location = new System.Drawing.Point(171, 110);
-      this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(15, 15);
-      this.panel2.TabIndex = 13;
-      // 
-      // panel1
-      // 
-      this.panel1.BackColor = System.Drawing.Color.White;
-      this.panel1.Controls.Add(this.panel3);
-      this.panel1.Location = new System.Drawing.Point(171, 74);
-      this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(15, 15);
-      this.panel1.TabIndex = 12;
-      // 
-      // panel3
-      // 
-      this.panel3.BackColor = System.Drawing.Color.White;
-      this.panel3.Location = new System.Drawing.Point(0, 0);
-      this.panel3.Name = "panel3";
-      this.panel3.Size = new System.Drawing.Size(15, 15);
-      this.panel3.TabIndex = 13;
-      // 
       // btnAddNoiseUnipolarPepper
       // 
       this.btnAddNoiseUnipolarPepper.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnAddNoiseUnipolarPepper.Location = new System.Drawing.Point(23, 102);
+      this.btnAddNoiseUnipolarPepper.Location = new System.Drawing.Point(226, 21);
       this.btnAddNoiseUnipolarPepper.Name = "btnAddNoiseUnipolarPepper";
-      this.btnAddNoiseUnipolarPepper.Size = new System.Drawing.Size(173, 30);
+      this.btnAddNoiseUnipolarPepper.Size = new System.Drawing.Size(91, 30);
       this.btnAddNoiseUnipolarPepper.TabIndex = 12;
-      this.btnAddNoiseUnipolarPepper.Text = "Unipolar Pepper";
+      this.btnAddNoiseUnipolarPepper.Text = "Pepper";
       this.btnAddNoiseUnipolarPepper.UseVisualStyleBackColor = true;
       this.btnAddNoiseUnipolarPepper.Click += new System.EventHandler(this.btnAddNoiseUnipolarPepper_Click);
       // 
       // btnAddNoiseBipolar
       // 
       this.btnAddNoiseBipolar.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.btnAddNoiseBipolar.Location = new System.Drawing.Point(23, 30);
+      this.btnAddNoiseBipolar.Location = new System.Drawing.Point(22, 21);
       this.btnAddNoiseBipolar.Name = "btnAddNoiseBipolar";
-      this.btnAddNoiseBipolar.Size = new System.Drawing.Size(173, 30);
+      this.btnAddNoiseBipolar.Size = new System.Drawing.Size(87, 30);
       this.btnAddNoiseBipolar.TabIndex = 6;
       this.btnAddNoiseBipolar.Text = "Bipolar";
       this.btnAddNoiseBipolar.UseVisualStyleBackColor = true;
@@ -204,25 +162,14 @@
       // 
       this.btnAddNoiseUnipolarSalt.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
       this.btnAddNoiseUnipolarSalt.ForeColor = System.Drawing.Color.Black;
-      this.btnAddNoiseUnipolarSalt.Location = new System.Drawing.Point(23, 66);
+      this.btnAddNoiseUnipolarSalt.Location = new System.Drawing.Point(118, 21);
       this.btnAddNoiseUnipolarSalt.Name = "btnAddNoiseUnipolarSalt";
-      this.btnAddNoiseUnipolarSalt.Size = new System.Drawing.Size(173, 30);
+      this.btnAddNoiseUnipolarSalt.RightToLeft = System.Windows.Forms.RightToLeft.No;
+      this.btnAddNoiseUnipolarSalt.Size = new System.Drawing.Size(100, 30);
       this.btnAddNoiseUnipolarSalt.TabIndex = 5;
-      this.btnAddNoiseUnipolarSalt.Text = "Unipolar Salt";
+      this.btnAddNoiseUnipolarSalt.Text = "Salt";
       this.btnAddNoiseUnipolarSalt.UseVisualStyleBackColor = true;
       this.btnAddNoiseUnipolarSalt.Click += new System.EventHandler(this.btnAddNoiseUnipolarSalt_Click);
-      // 
-      // chartResultSpectrum
-      // 
-      chartArea1.Name = "ChartArea1";
-      this.chartResultSpectrum.ChartAreas.Add(chartArea1);
-      legend1.Name = "Legend1";
-      this.chartResultSpectrum.Legends.Add(legend1);
-      this.chartResultSpectrum.Location = new System.Drawing.Point(484, 326);
-      this.chartResultSpectrum.Name = "chartResultSpectrum";
-      this.chartResultSpectrum.Size = new System.Drawing.Size(450, 290);
-      this.chartResultSpectrum.TabIndex = 18;
-      this.chartResultSpectrum.Text = "chart2";
       // 
       // label2
       // 
@@ -238,7 +185,7 @@
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.label3.Location = new System.Drawing.Point(13, 310);
+      this.label3.Location = new System.Drawing.Point(13, 261);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(69, 13);
       this.label3.TabIndex = 20;
@@ -248,7 +195,7 @@
       // 
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.label1.Location = new System.Drawing.Point(481, 14);
+      this.label1.Location = new System.Drawing.Point(424, 13);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(89, 13);
       this.label1.TabIndex = 21;
@@ -258,7 +205,7 @@
       // 
       this.label4.AutoSize = true;
       this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.label4.Location = new System.Drawing.Point(481, 311);
+      this.label4.Location = new System.Drawing.Point(424, 261);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(85, 13);
       this.label4.TabIndex = 22;
@@ -267,9 +214,9 @@
       // srcImgSpectrum
       // 
       this.srcImgSpectrum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.srcImgSpectrum.Location = new System.Drawing.Point(484, 29);
+      this.srcImgSpectrum.Location = new System.Drawing.Point(427, 29);
       this.srcImgSpectrum.Name = "srcImgSpectrum";
-      this.srcImgSpectrum.Size = new System.Drawing.Size(450, 275);
+      this.srcImgSpectrum.Size = new System.Drawing.Size(390, 210);
       this.srcImgSpectrum.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.srcImgSpectrum.TabIndex = 23;
       this.srcImgSpectrum.TabStop = false;
@@ -280,7 +227,7 @@
       this.grboxColorChannel.Controls.Add(this.rdoGreen);
       this.grboxColorChannel.Controls.Add(this.rdoRed);
       this.grboxColorChannel.Enabled = false;
-      this.grboxColorChannel.Location = new System.Drawing.Point(953, 114);
+      this.grboxColorChannel.Location = new System.Drawing.Point(902, 79);
       this.grboxColorChannel.Name = "grboxColorChannel";
       this.grboxColorChannel.Size = new System.Drawing.Size(219, 67);
       this.grboxColorChannel.TabIndex = 24;
@@ -327,18 +274,127 @@
       this.rdoRed.Text = "Red";
       this.rdoRed.UseVisualStyleBackColor = true;
       // 
+      // resultImgSpectrum
+      // 
+      this.resultImgSpectrum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.resultImgSpectrum.Location = new System.Drawing.Point(427, 277);
+      this.resultImgSpectrum.Name = "resultImgSpectrum";
+      this.resultImgSpectrum.Size = new System.Drawing.Size(390, 210);
+      this.resultImgSpectrum.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.resultImgSpectrum.TabIndex = 25;
+      this.resultImgSpectrum.TabStop = false;
+      // 
+      // btnLowPassFilter
+      // 
+      this.btnLowPassFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.btnLowPassFilter.Location = new System.Drawing.Point(60, 66);
+      this.btnLowPassFilter.Name = "btnLowPassFilter";
+      this.btnLowPassFilter.Size = new System.Drawing.Size(227, 30);
+      this.btnLowPassFilter.TabIndex = 26;
+      this.btnLowPassFilter.Text = "Low Pass Filter";
+      this.btnLowPassFilter.UseVisualStyleBackColor = true;
+      this.btnLowPassFilter.Click += new System.EventHandler(this.btnLowPassFilter_Click);
+      // 
+      // grboxFiltering
+      // 
+      this.grboxFiltering.Controls.Add(this.txtCutOffFrequency);
+      this.grboxFiltering.Controls.Add(this.lblResultImageEnergy);
+      this.grboxFiltering.Controls.Add(this.label7);
+      this.grboxFiltering.Controls.Add(this.label6);
+      this.grboxFiltering.Controls.Add(this.btnGaussLowPassFilter);
+      this.grboxFiltering.Controls.Add(this.btnLowPassFilter);
+      this.grboxFiltering.Enabled = false;
+      this.grboxFiltering.Location = new System.Drawing.Point(837, 244);
+      this.grboxFiltering.Name = "grboxFiltering";
+      this.grboxFiltering.Size = new System.Drawing.Size(335, 196);
+      this.grboxFiltering.TabIndex = 27;
+      this.grboxFiltering.TabStop = false;
+      this.grboxFiltering.Text = "Filtering";
+      // 
+      // txtCutOffFrequency
+      // 
+      this.txtCutOffFrequency.Location = new System.Drawing.Point(122, 29);
+      this.txtCutOffFrequency.Name = "txtCutOffFrequency";
+      this.txtCutOffFrequency.Size = new System.Drawing.Size(100, 20);
+      this.txtCutOffFrequency.TabIndex = 34;
+      this.txtCutOffFrequency.Text = "1";
+      // 
+      // lblResultImageEnergy
+      // 
+      this.lblResultImageEnergy.AutoSize = true;
+      this.lblResultImageEnergy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.lblResultImageEnergy.Location = new System.Drawing.Point(128, 160);
+      this.lblResultImageEnergy.Name = "lblResultImageEnergy";
+      this.lblResultImageEnergy.Size = new System.Drawing.Size(37, 20);
+      this.lblResultImageEnergy.TabIndex = 33;
+      this.lblResultImageEnergy.Text = "null";
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.label7.Location = new System.Drawing.Point(17, 163);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(108, 13);
+      this.label7.TabIndex = 32;
+      this.label7.Text = "Result Image Energy:";
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.label6.Location = new System.Drawing.Point(22, 32);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(94, 13);
+      this.label6.TabIndex = 30;
+      this.label6.Text = "Cut-off Frequency:";
+      // 
+      // btnGaussLowPassFilter
+      // 
+      this.btnGaussLowPassFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.btnGaussLowPassFilter.Location = new System.Drawing.Point(60, 111);
+      this.btnGaussLowPassFilter.Name = "btnGaussLowPassFilter";
+      this.btnGaussLowPassFilter.Size = new System.Drawing.Size(227, 30);
+      this.btnGaussLowPassFilter.TabIndex = 27;
+      this.btnGaussLowPassFilter.Text = "Gauss Low Pass Filter";
+      this.btnGaussLowPassFilter.UseVisualStyleBackColor = true;
+      this.btnGaussLowPassFilter.Click += new System.EventHandler(this.btnGaussLowPassFilter_Click);
+      // 
+      // imgSpectrumFilter
+      // 
+      this.imgSpectrumFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.imgSpectrumFilter.Location = new System.Drawing.Point(427, 521);
+      this.imgSpectrumFilter.Name = "imgSpectrumFilter";
+      this.imgSpectrumFilter.Size = new System.Drawing.Size(390, 210);
+      this.imgSpectrumFilter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.imgSpectrumFilter.TabIndex = 28;
+      this.imgSpectrumFilter.TabStop = false;
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.label5.Location = new System.Drawing.Point(424, 505);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(77, 13);
+      this.label5.TabIndex = 29;
+      this.label5.Text = "Filter Spectrum";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1184, 634);
+      this.ClientSize = new System.Drawing.Size(1184, 743);
+      this.Controls.Add(this.label5);
+      this.Controls.Add(this.imgSpectrumFilter);
+      this.Controls.Add(this.grboxFiltering);
+      this.Controls.Add(this.resultImgSpectrum);
       this.Controls.Add(this.grboxColorChannel);
       this.Controls.Add(this.srcImgSpectrum);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.label2);
-      this.Controls.Add(this.chartResultSpectrum);
       this.Controls.Add(this.grboxNoise);
       this.Controls.Add(this.btnResetImage);
       this.Controls.Add(this.btnSaveImage);
@@ -346,15 +402,18 @@
       this.Controls.Add(this.resultImage);
       this.Controls.Add(this.sourceImage);
       this.Name = "Form1";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Filtering Image 2";
       ((System.ComponentModel.ISupportInitialize)(this.resultImage)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).EndInit();
       this.grboxNoise.ResumeLayout(false);
-      this.panel1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.chartResultSpectrum)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).EndInit();
       this.grboxColorChannel.ResumeLayout(false);
       this.grboxColorChannel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.resultImgSpectrum)).EndInit();
+      this.grboxFiltering.ResumeLayout(false);
+      this.grboxFiltering.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.imgSpectrumFilter)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -370,15 +429,9 @@
     private System.Windows.Forms.SaveFileDialog saveImage;
     private System.Windows.Forms.OpenFileDialog openImage;
     private System.Windows.Forms.GroupBox grboxNoise;
-    private System.Windows.Forms.Panel panel5;
-    private System.Windows.Forms.Panel panel4;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Panel panel3;
     private System.Windows.Forms.Button btnAddNoiseUnipolarPepper;
     private System.Windows.Forms.Button btnAddNoiseBipolar;
     private System.Windows.Forms.Button btnAddNoiseUnipolarSalt;
-    private System.Windows.Forms.DataVisualization.Charting.Chart chartResultSpectrum;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label1;
@@ -388,6 +441,16 @@
     private System.Windows.Forms.RadioButton rdoBlue;
     private System.Windows.Forms.RadioButton rdoGreen;
     private System.Windows.Forms.RadioButton rdoRed;
+    private System.Windows.Forms.PictureBox resultImgSpectrum;
+    private System.Windows.Forms.Button btnLowPassFilter;
+    private System.Windows.Forms.GroupBox grboxFiltering;
+    private System.Windows.Forms.Button btnGaussLowPassFilter;
+    private System.Windows.Forms.PictureBox imgSpectrumFilter;
+    private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.Label lblResultImageEnergy;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.TextBox txtCutOffFrequency;
   }
 }
 
