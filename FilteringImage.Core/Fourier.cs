@@ -77,28 +77,23 @@ namespace FilteringImage.Core
       return rowResult;
     }
 
-    public static InvertedFourierResult[] IDFT2D(FourierResult[] fourierResult)
+    public static double[,] IDFT2D(FourierResult[] fourierResult)
     {
       int m = fourierResult[0].Re.Length; //Количество столбцов
       int n = fourierResult.Length; //Количество строк
       int length = m - 1;
       int height = n - 1;
 
-      //#region Преобразование Фурье по строкам
+      #region Обратное преобразование Фурье по строкам
 
-      //FourierResult[] rowResult = new FourierResult[n];
-      //double[] fx = new double[m];
+      InvertedFourierResult[] rowResult = new InvertedFourierResult[n];
 
-      //for(int y = 0; y <= height; y++)
-      //{
-      //  for(int x = 0; x <= length; x++)
-      //  {
-      //    fx[x] = fxy[y, x]; //Набираем значения функции по строкам
-      //  }
-      //  rowResult[y] = DFT(fx);
-      //}
+      for(int y = 0; y <= height; y++)
+      {
+        rowResult[y] = IDFT(fourierResult[y]);
+      }
 
-      //#endregion
+      #endregion
 
       //#region Преобразование Фурье по столбцам
 
@@ -205,23 +200,19 @@ namespace FilteringImage.Core
       return result;
     }
 
-    public static Bitmap GetImageSpectrum(Bitmap bitmap, RGBChannel colorChannel)
+    public static Bitmap GetImageSpectrum(Bitmap bitmap)
     {
-      bitmap = Helpers.GetImageInColorScale(bitmap, colorChannel);
-      double[,] fxy =Helpers.GetBitmapFunction(bitmap, colorChannel);
-
-      FourierResult[] fourierResult = Fourier.DFT2D(fxy);
-
+      bitmap = Helpers.GetImageInColorScale(bitmap);
+      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
+      FourierResult[] fourierResult = DFT2D(fxy);
       int x, y = 0;
-      byte gray;
 
       foreach(var row in fourierResult)
       {
         x = 0;
         foreach(var item in row.Spectrum)
         {
-          gray = ColorChannel.ToGray(item, item, item);
-          bitmap.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
+          bitmap.SetPixel(x, y, Color.FromArgb((byte)item, 0, 0));
           x++;
         }
         y++;

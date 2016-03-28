@@ -29,14 +29,12 @@ namespace FilteringImage2
       if(openImage.ShowDialog() == DialogResult.OK)
       {
         sourceImage.Image = new Bitmap(openImage.FileName);
-        resultImage.Image = (Image)sourceImage.Image.Clone();
         sourceBitmap = new Bitmap(sourceImage.Image);
+        resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
         btnSaveImage.Enabled = true;
         btnResetImage.Enabled = true;
-        grboxColorChannel.Enabled = true;
-        grboxNoise.Enabled = true;
         grboxFiltering.Enabled = true;
-        DrowSourceSpectrum(sourceBitmap);
+        DrowSourceSpectrum(new Bitmap(sourceBitmap));
       }
     }
 
@@ -57,28 +55,7 @@ namespace FilteringImage2
     //Сброс обрабатываемого изображения в исходное состояние
     private void btnResetImage_Click(object sender, EventArgs e)
     {
-      resultImage.Image = sourceImage.Image;
-    }
-
-    //Добавление биполярного шума
-    private void btnAddNoiseBipolar_Click(object sender, EventArgs e)
-    {
-      Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddBipolarNoise(bitmap, GetCurrentColorChannel());
-    }
-
-    //Добавление униполярного соляного шума
-    private void btnAddNoiseUnipolarSalt_Click(object sender, EventArgs e)
-    {
-      Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddUnipolarSaltNoise(bitmap, GetCurrentColorChannel());
-    }
-
-    //Добавление униполярного перечного шума
-    private void btnAddNoiseUnipolarPepper_Click(object sender, EventArgs e)
-    {
-      Bitmap bitmap = new Bitmap(resultImage.Image);
-      resultImage.Image = Noise.AddUnipolarPepperNoise(bitmap, GetCurrentColorChannel());
+      resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
     }
 
     //Применение Идеального фильтра низких частот
@@ -98,28 +75,24 @@ namespace FilteringImage2
     //Отрисовка спектра исходного изображения
     private void DrowSourceSpectrum(Bitmap bitmap)
     {
-      srcImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap, RGBChannel.Gray);
+      srcImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap);
     }
 
     //Отрисовка спектра отфильтрованного изображения
     private void DrowFilteredImageSpectrum(Bitmap bitmap)
     {
-      resultImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap, RGBChannel.Gray);
-    }
-
-    //Получение текущего выбранного цветового канала
-    private RGBChannel GetCurrentColorChannel()
-    {
-      RGBChannel colorChannel = RGBChannel.Red;
-      if(rdoGreen.Checked) colorChannel = RGBChannel.Green;
-      if(rdoBlue.Checked) colorChannel = RGBChannel.Blue;
-      return colorChannel;
+      resultImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap);
     }
 
     //Получение введенной частоты среза
     private double GetCurrentCutOffFrequency()
     {
-      return Convert.ToDouble(txtCutOffFrequency.Text);
+      return Convert.ToDouble(numCutOffFrequency.Value);
+    }
+
+    private void grboxFiltering_Enter(object sender, EventArgs e)
+    {
+
     }
   }
 }

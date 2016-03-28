@@ -9,13 +9,12 @@ namespace FilteringImage.Core
 {
   public static class Helpers
   {
-    internal static double[,] GetBitmapFunction(Bitmap bitmap, RGBChannel colorChannel)
+    internal static double[,] GetBitmapFunction(Bitmap bitmap)
     {
       int m = bitmap.Width;
       int n = bitmap.Height;
       int length = m - 1;
       int height = n - 1;
-      byte gray;
 
       double[,] fxy = new double[n, m];
 
@@ -23,38 +22,45 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x < length; x++)
         {
-          gray = ColorChannel.ToGray(
-              bitmap.GetPixel(x, y).R,
-              bitmap.GetPixel(x, y).G,
-              bitmap.GetPixel(x, y).B);
-
-          fxy[y, x] = gray * Step(x + y);
+          fxy[y, x] = bitmap.GetPixel(x, y).R;
         }
       }
 
       return fxy;
     }
 
-    internal static Bitmap GetImageInColorScale(Bitmap bitmap, RGBChannel colorChannel)
+    public static Bitmap GetImageInColorScale(Bitmap bitmap)
     {
       int length = bitmap.Width - 1;
       int height = bitmap.Height - 1;
-      byte gray;
+      byte red;
 
       for(int y = 0; y < height; y++)
       {
         for(int x = 0; x < length; x++)
         {
-          gray = ColorChannel.ToGray(
-              bitmap.GetPixel(x, y).R,
-              bitmap.GetPixel(x, y).G,
-              bitmap.GetPixel(x, y).B);
-
-          bitmap.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
+          red = bitmap.GetPixel(x, y).R;
+          bitmap.SetPixel(x, y, Color.FromArgb(red, 0, 0));
         }
       }
 
       return bitmap;
+    }
+
+    public static double[,] CenteringFunction(double[,] fxy)
+    {
+      int length = fxy.GetLength(1) - 1;
+      int height = fxy.GetLength(0) - 1;
+
+      for(int y = 0; y <= height; y++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          fxy[y, x] = fxy[x, y] * Helpers.Step(x + y);
+        }
+      }
+
+      return fxy;
     }
 
     /*
