@@ -131,14 +131,10 @@ namespace FilteringImage.Core
     public static Bitmap FilterIdealLowPass(Bitmap bitmap, double? cutOffFrequency = null)
     {
       double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      fxy = Helpers.CenteringFunction(fxy);
-
-      int m = fxy.GetLength(1); //Количество столбцов
-      int n = fxy.GetLength(0); //Количество строк
-      int length = m - 1;
-      int height = n - 1;
-
+      fxy = Helpers.CenteringFunction(fxy); //Центрируем функцию
       fxy = Fourier.IDFT2D(Fourier.DFT2D(fxy));
+      fxy = Helpers.CenteringFunction(fxy); //Отменяем центирование функции
+      bitmap = Helpers.GenerateBitmap(fxy);
 
       return bitmap;
     }

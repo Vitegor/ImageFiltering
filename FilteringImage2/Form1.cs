@@ -31,10 +31,11 @@ namespace FilteringImage2
         sourceImage.Image = new Bitmap(openImage.FileName);
         sourceBitmap = new Bitmap(sourceImage.Image);
         resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
+        resultImgSpectrum.Image = null;
         btnSaveImage.Enabled = true;
         btnResetImage.Enabled = true;
         grboxFiltering.Enabled = true;
-        DrowSourceSpectrum(new Bitmap(sourceBitmap));
+        DrowSourceSpectrum();
       }
     }
 
@@ -56,32 +57,33 @@ namespace FilteringImage2
     private void btnResetImage_Click(object sender, EventArgs e)
     {
       resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
+      resultImgSpectrum.Image = null;
     }
 
     //Применение Идеального фильтра низких частот
     private void btnLowPassFilter_Click(object sender, EventArgs e)
     {
       resultImage.Image = Filter.FilterIdealLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
-      DrowFilteredImageSpectrum(new Bitmap(resultImage.Image));
+      DrowFilteredImageSpectrum();
     }
 
     //Применение Гауссова фильтра низких частот
     private void btnGaussLowPassFilter_Click(object sender, EventArgs e)
     {
       resultImage.Image = Filter.FilterGaussLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
-      DrowFilteredImageSpectrum(new Bitmap(resultImage.Image));
+      DrowFilteredImageSpectrum();
     }
 
     //Отрисовка спектра исходного изображения
-    private void DrowSourceSpectrum(Bitmap bitmap)
+    private void DrowSourceSpectrum()
     {
-      srcImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap);
+      srcImgSpectrum.Image = Fourier.GetImageSpectrum(new Bitmap(sourceBitmap));
     }
 
     //Отрисовка спектра отфильтрованного изображения
-    private void DrowFilteredImageSpectrum(Bitmap bitmap)
+    private void DrowFilteredImageSpectrum()
     {
-      resultImgSpectrum.Image = Fourier.GetImageSpectrum(bitmap);
+      resultImgSpectrum.Image = Fourier.GetImageSpectrum(new Bitmap(resultImage.Image));
     }
 
     //Получение введенной частоты среза

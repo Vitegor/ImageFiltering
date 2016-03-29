@@ -1,7 +1,7 @@
 ﻿namespace FilteringImage.Core
 {
   //Класс результата для прямого преобразования Фурье
-  public class FourierResult : InvertedFourierResult
+  public class FourierResult : InverseFourierResult
   {
     public FourierResult(int m) : base(m)
     {
@@ -12,9 +12,9 @@
   }
 
   //Класс результата для обратного преобразования Фурье
-  public class InvertedFourierResult
+  public class InverseFourierResult
   {
-    public InvertedFourierResult(int m)
+    public InverseFourierResult(int m)
     {
       Re = new double[m];
       Im = new double[m];

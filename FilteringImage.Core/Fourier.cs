@@ -6,6 +6,28 @@ namespace FilteringImage.Core
 {
   public static class Fourier
   {
+    public static Bitmap GetImageSpectrum(Bitmap bitmap)
+    {
+      bitmap = Helpers.GetImageInColorScale(bitmap);
+      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
+      fxy = Helpers.CenteringFunction(fxy);
+      FourierResult[] fourierResult = DFT2D(fxy);
+
+      int x, y = 0;
+      foreach(var row in fourierResult)
+      {
+        x = 0;
+        foreach(var item in row.Spectrum)
+        {
+          bitmap.SetPixel(x, y, Color.FromArgb((byte)item, 0, 0));
+          x++;
+        }
+        y++;
+      }
+
+      return bitmap;
+    }
+
     /*
       Двумерное дискретное преобразование Фурье
 
@@ -86,63 +108,71 @@ namespace FilteringImage.Core
 
       #region Обратное преобразование Фурье по строкам
 
-      InvertedFourierResult[] rowResult = new InvertedFourierResult[n];
+      InverseFourierResult[] rowResult = new InverseFourierResult[n];
+      double[] re = new double[m];
+      double[] im = new double[m];
 
       for(int y = 0; y <= height; y++)
       {
-        rowResult[y] = IDFT(fourierResult[y]);
+        //Набираем значения по строкам
+        for(int x = 0; x <= length; x++)
+        {
+          re[x] = fourierResult[y].Re[x];
+          im[x] = fourierResult[y].Im[x];
+        }
+        rowResult[y] = IDFT(re, im);
       }
 
       #endregion
 
-      //#region Преобразование Фурье по столбцам
+      #region Обратное преобразование Фурье по столбцам
 
-      //FourierResult[] colResult = new FourierResult[m];
-      //double[] re = new double[n];
-      //double[] im = new double[n];
+      InverseFourierResult[] colResult = new InverseFourierResult[m];
+      re = new double[n];
+      im = new double[n];
 
-      //for(int x = 0; x <= length; x++)
-      //{
-      //  //Набираем значения действительной и мнимой частей по столбцам
-      //  for(int y = 0; y <= height; y++)
-      //  {
-      //    re[y] = rowResult[y].Re[x];
-      //    im[y] = rowResult[y].Im[x];
-      //  }
-      //  colResult[x] = ComplexDFT(re, im); //Получаем отраженную матрицу значений
-      //}
+      for(int x = 0; x <= length; x++)
+      {
+        //Набираем значения действительной и мнимой частей по столбцам
+        for(int y = 0; y <= height; y++)
+        {
+          re[y] = rowResult[y].Re[x];
+          im[y] = rowResult[y].Im[x];
+        }
+        colResult[x] = IDFT(re, im); //Получаем отраженную матрицу значений
+      }
 
-      //#endregion
+      #endregion
 
-      //#region Обратное отражение результата преобразования Фурье по столбцам
+      #region Обратное отражение результата преобразования Фурье по столбцам
 
-      //for(int x = 0; x <= length; x++)
-      //{
-      //  for(int y = 0; y <= height; y++)
-      //  {
-      //    /* Значение помещаем в массив результатов по строкам т.к. как он соответствует
-      //    размерам исходной функции */
-      //    rowResult[y].Re[x] = colResult[x].Re[y];
-      //    rowResult[y].Im[x] = colResult[x].Im[y];
-      //    rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
-      //  }
-      //}
+      double[,] result = new double[n, m];
 
-      //#endregion
+      for(int x = 0; x <= length; x++)
+      {
+        for(int y = 0; y <= height; y++)
+        {
+          /*
+            Помещаем значения действительной части 
+            обратного пребобразования Фурье в реузльтирующий массив
+          */
+          result[y, x] = colResult[x].Re[y];
+        }
+      }
 
-      //return rowResult;
+      #endregion
 
-      throw new NotImplementedException();
+      return result;
     }
 
     /*
-      Одномерное дискретное преобразование Фурье
+Одномерное дискретное преобразование Фурье
 
-      Параметры:
-        sourceFx - исходный массив значений функции
-        m - количество отсчетов входной последовательности и
-            количество частотных отсчетов результата преобразования Фурье
-    */
+Параметры:
+sourceFx - исходный массив значений функции
+m - количество отсчетов входной последовательности и
+    количество частотных отсчетов результата преобразования Фурье
+*/
     public static FourierResult DFT(double[] fx)
     {
       int m = fx.Length;
@@ -163,25 +193,25 @@ namespace FilteringImage.Core
       return result;
     }
 
-    public static InvertedFourierResult IDFT(FourierResult fourierResult)
+    private static InverseFourierResult IDFT(double[] re, double[] im)
     {
-      int m = fourierResult.Im.Length;
+      int m = re.Length;
       int length = m - 1;
-      InvertedFourierResult result = new InvertedFourierResult(m);
+      InverseFourierResult result = new InverseFourierResult(m);
 
-      for(var u = 0; u <= length; u++)
+      for(int u = 0; u <= length; u++)
       {
         for(int x = 0; x <= length; x++)
         {
-          result.Re[u] += InvertRe(fourierResult.Re[x], u, x, m);
-          result.Im[u] += InvertIm(fourierResult.Im[x], u, x, m);
+          result.Re[u] += InverseRe(re[x], u, x, m);
+          result.Im[u] += InverseIm(im[x], u, x, m);
         }
       }
 
       return result;
     }
 
-    public static FourierResult ComplexDFT(double[] re, double[] im)
+    private static FourierResult ComplexDFT(double[] re, double[] im)
     {
       int m = re.Length;
       int length = m - 1;
@@ -198,27 +228,6 @@ namespace FilteringImage.Core
       }
 
       return result;
-    }
-
-    public static Bitmap GetImageSpectrum(Bitmap bitmap)
-    {
-      bitmap = Helpers.GetImageInColorScale(bitmap);
-      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      FourierResult[] fourierResult = DFT2D(fxy);
-      int x, y = 0;
-
-      foreach(var row in fourierResult)
-      {
-        x = 0;
-        foreach(var item in row.Spectrum)
-        {
-          bitmap.SetPixel(x, y, Color.FromArgb((byte)item, 0, 0));
-          x++;
-        }
-        y++;
-      }
-
-      return bitmap;
     }
 
     /*
@@ -276,7 +285,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double InvertRe(double Re, int u, int x, int m)
+    private static double InverseRe(double Re, int u, int x, int m)
     {
       return Re * Math.Cos((2 * Math.PI * u * x) / m);
     }
@@ -291,7 +300,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double InvertIm(double Im, int u, int x, int m)
+    private static double InverseIm(double Im, int u, int x, int m)
     {
       return Im * Math.Sin((2 * Math.PI * u * x) / m);
     }

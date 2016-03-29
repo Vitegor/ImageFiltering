@@ -56,11 +56,29 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= length; x++)
         {
-          fxy[y, x] = fxy[x, y] * Helpers.Step(x + y);
+          fxy[y, x] = fxy[y, x] * Step(x + y);
         }
       }
 
       return fxy;
+    }
+
+    public static Bitmap GenerateBitmap(double[,] fxy)
+    {
+      int length = fxy.GetLength(1) - 1;
+      int height = fxy.GetLength(0) - 1;
+
+      Bitmap bitmap = new Bitmap(fxy.GetLength(1), fxy.GetLength(0));
+
+      for(int y = 0; y <= height; y++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          bitmap.SetPixel(x, y, Color.FromArgb((byte)fxy[y, x], 0, 0));
+        }
+      }
+
+      return bitmap;
     }
 
     /*
