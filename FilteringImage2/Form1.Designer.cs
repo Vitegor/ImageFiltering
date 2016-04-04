@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       this.resultImage = new System.Windows.Forms.PictureBox();
       this.sourceImage = new System.Windows.Forms.PictureBox();
       this.btnResetImage = new System.Windows.Forms.Button();
@@ -50,6 +51,7 @@
       this.btnGaussLowPassFilter = new System.Windows.Forms.Button();
       this.imgSpectrumFilter = new System.Windows.Forms.PictureBox();
       this.label5 = new System.Windows.Forms.Label();
+      this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
       ((System.ComponentModel.ISupportInitialize)(this.resultImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).BeginInit();
@@ -57,6 +59,7 @@
       this.grboxFiltering.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numCutOffFrequency)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.imgSpectrumFilter)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
       this.SuspendLayout();
       // 
       // resultImage
@@ -270,11 +273,22 @@
       this.label5.TabIndex = 29;
       this.label5.Text = "Filter Spectrum";
       // 
+      // chart1
+      // 
+      chartArea1.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea1);
+      this.chart1.Location = new System.Drawing.Point(758, 277);
+      this.chart1.Name = "chart1";
+      this.chart1.Size = new System.Drawing.Size(340, 210);
+      this.chart1.TabIndex = 30;
+      this.chart1.Text = "chart1";
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1117, 505);
+      this.Controls.Add(this.chart1);
       this.Controls.Add(this.label5);
       this.Controls.Add(this.imgSpectrumFilter);
       this.Controls.Add(this.grboxFiltering);
@@ -300,6 +314,7 @@
       this.grboxFiltering.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.numCutOffFrequency)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.imgSpectrumFilter)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -329,6 +344,7 @@
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.NumericUpDown numCutOffFrequency;
+    private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
   }
 }
 

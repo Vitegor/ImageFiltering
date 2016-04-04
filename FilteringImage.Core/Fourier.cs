@@ -8,18 +8,19 @@ namespace FilteringImage.Core
   {
     public static Bitmap GetImageSpectrum(Bitmap bitmap)
     {
-      bitmap = Helpers.GetImageInColorScale(bitmap);
+      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
       double[,] fxy = Helpers.GetBitmapFunction(bitmap);
       fxy = Helpers.CenteringFunction(fxy);
       FourierResult[] fourierResult = DFT2D(fxy);
 
       int x, y = 0;
+      byte gray;
       foreach(var row in fourierResult)
       {
         x = 0;
         foreach(var item in row.Spectrum)
         {
-          bitmap.SetPixel(x, y, Color.FromArgb((byte)item, 0, 0));
+          bitmap.SetPixel(x, y, Color.FromArgb((byte)Math.Log10(item), 0, 0));
           x++;
         }
         y++;
@@ -91,6 +92,7 @@ namespace FilteringImage.Core
           rowResult[y].Re[x] = colResult[x].Re[y];
           rowResult[y].Im[x] = colResult[x].Im[y];
           rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
+
         }
       }
 

@@ -9,7 +9,7 @@ namespace FilteringImage.Core
 {
   public static class Helpers
   {
-    internal static double[,] GetBitmapFunction(Bitmap bitmap)
+    public static double[,] GetBitmapFunction(Bitmap bitmap)
     {
       int m = bitmap.Width;
       int n = bitmap.Height;

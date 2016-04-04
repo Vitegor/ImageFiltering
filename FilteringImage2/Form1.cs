@@ -36,6 +36,7 @@ namespace FilteringImage2
         btnResetImage.Enabled = true;
         grboxFiltering.Enabled = true;
         DrowSourceSpectrum();
+        DrowChartSpectrum();
       }
     }
 
@@ -78,6 +79,26 @@ namespace FilteringImage2
     private void DrowSourceSpectrum()
     {
       srcImgSpectrum.Image = Fourier.GetImageSpectrum(new Bitmap(sourceBitmap));
+    }
+
+    private void DrowChartSpectrum()
+    {
+      double[,] fxy = Helpers.GetBitmapFunction(new Bitmap(sourceBitmap));
+      int m = sourceBitmap.Width;
+      int n = sourceBitmap.Height;
+      int center = n / 2;
+      fxy = Helpers.CenteringFunction(fxy);
+      FourierResult[] fr = Fourier.DFT2D(fxy);
+
+      chart1.Series.Clear();
+      Series s = chart1.Series.Add("Спектр");
+      chart1.Series[0].ChartType = SeriesChartType.Spline;
+      chart1.Series[0].BorderWidth = 3;
+
+      for (int x = 0; x <= m - 1; x++)
+      {
+        s.Points.AddXY(x, Math.Log10(fr[center].Spectrum[x]));
+      }
     }
 
     //Отрисовка спектра отфильтрованного изображения
