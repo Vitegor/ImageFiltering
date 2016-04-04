@@ -9,6 +9,11 @@ namespace FilteringImage.Core
 {
   public static class Helpers
   {
+    public static double GetProportionalValue(double value, double srcMin, double srcMax, double resMin, double resMax)
+    {
+      return (resMax - resMin) * ((value - srcMin) / (srcMax - srcMin));
+    }
+
     public static double[,] GetBitmapFunction(Bitmap bitmap)
     {
       int m = bitmap.Width;

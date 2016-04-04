@@ -83,22 +83,51 @@ namespace FilteringImage2
 
     private void DrowChartSpectrum()
     {
+      int length = sourceBitmap.Width;
+      int height = sourceBitmap.Height;
       double[,] fxy = Helpers.GetBitmapFunction(new Bitmap(sourceBitmap));
-      int m = sourceBitmap.Width;
-      int n = sourceBitmap.Height;
-      int center = n / 2;
       fxy = Helpers.CenteringFunction(fxy);
       FourierResult[] fr = Fourier.DFT2D(fxy);
+
+      #region Инициализация графика
 
       chart1.Series.Clear();
       Series s = chart1.Series.Add("Спектр");
       chart1.Series[0].ChartType = SeriesChartType.Spline;
       chart1.Series[0].BorderWidth = 3;
 
-      for (int x = 0; x <= m - 1; x++)
+      #endregion
+
+      #region Нахождение минимального и максимального значений, логарифмирование
+
+      int MIN_COLOR = 0;
+      int MAX_COLOR = 255;
+      double min = 0;
+      double max = 0;
+      double tempValue;
+      for(int i = 0; i < height; i++)
       {
-        s.Points.AddXY(x, Math.Log10(fr[center].Spectrum[x]));
+        for(int j = 0; j < length; j++)
+        {
+          tempValue = fr[i].Spectrum[j];
+          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
+          if(tempValue < min) min = tempValue;
+          if(tempValue > max) max = tempValue;
+          fr[i].Spectrum[j] = tempValue;
+        }
       }
+
+      #endregion
+
+      #region Вывод графика спектра
+
+      int center = height / 2;
+      for (int i = 0; i <= length - 1; i++)
+      {
+        s.Points.AddXY(i, (byte)Helpers.GetProportionalValue(fr[center].Spectrum[i], min, max, MIN_COLOR, MAX_COLOR));
+      }
+
+      #endregion
     }
 
     //Отрисовка спектра отфильтрованного изображения

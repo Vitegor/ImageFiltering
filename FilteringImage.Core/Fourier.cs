@@ -8,19 +8,44 @@ namespace FilteringImage.Core
   {
     public static Bitmap GetImageSpectrum(Bitmap bitmap)
     {
+      int MIN_COLOR = 0;
+      int MAX_COLOR = 255;
+      int length = bitmap.Width;
+      int height = bitmap.Height;
+
       bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
       double[,] fxy = Helpers.GetBitmapFunction(bitmap);
       fxy = Helpers.CenteringFunction(fxy);
       FourierResult[] fourierResult = DFT2D(fxy);
 
+      #region Логарифмирование, нахождение минимального и максимального значений
+
+      double min = 0;
+      double max = 0;
+      double tempValue;
+      for(int i = 0; i < height; i++)
+      {
+        for(int j = 0; j < length; j++)
+        {
+          tempValue = fourierResult[i].Spectrum[j];
+          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
+          if(tempValue < min) min = tempValue;
+          if(tempValue > max) max = tempValue;
+          fourierResult[i].Spectrum[j] = tempValue;
+        }
+      }
+
+      #endregion
+
       int x, y = 0;
-      byte gray;
+      byte tempColor = 0;
       foreach(var row in fourierResult)
       {
         x = 0;
         foreach(var item in row.Spectrum)
         {
-          bitmap.SetPixel(x, y, Color.FromArgb((byte)Math.Log10(item), 0, 0));
+          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
+          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
           x++;
         }
         y++;
@@ -70,13 +95,13 @@ namespace FilteringImage.Core
 
       for(int x = 0; x <= length; x++)
       {
-        //Набираем значения действительной и мнимой частей по столбцам
         for(int y = 0; y <= height; y++)
         {
+          //Набираем значения действительной и мнимой частей по столбцам
           re[y] = rowResult[y].Re[x];
           im[y] = rowResult[y].Im[x];
         }
-        colResult[x] = ComplexDFT(re, im); //Получаем отраженную матрицу значений
+        colResult[x] = ComplexDFT(re, im);
       }
 
       #endregion
@@ -87,12 +112,13 @@ namespace FilteringImage.Core
       {
         for(int y = 0; y <= height; y++)
         {
-          /* Значение помещаем в массив результатов по строкам т.к. как он соответствует
-          размерам исходной функции */
+          /*
+            Значение помещаем в массив результатов по строкам т.к. как он соответствует
+            размерам исходной функции 
+          */
           rowResult[y].Re[x] = colResult[x].Re[y];
           rowResult[y].Im[x] = colResult[x].Im[y];
           rowResult[y].Spectrum[x] = colResult[x].Spectrum[y];
-
         }
       }
 
