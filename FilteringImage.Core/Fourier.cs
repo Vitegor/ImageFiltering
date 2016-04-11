@@ -221,7 +221,7 @@ m - количество отсчетов входной последовате�
       return result;
     }
 
-    private static InverseFourierResult IDFT(double[] re, double[] im)
+    public static InverseFourierResult IDFT(double[] re, double[] im)
     {
       int m = re.Length;
       int length = m - 1;

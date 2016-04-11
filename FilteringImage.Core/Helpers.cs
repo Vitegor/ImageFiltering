@@ -19,7 +19,7 @@ namespace FilteringImage.Core
       int m = bitmap.Width;
       int n = bitmap.Height;
       int length = m - 1;
-      int height = n - 1;
+      int height = n - 1;   
 
       double[,] fxy = new double[n, m];
 
