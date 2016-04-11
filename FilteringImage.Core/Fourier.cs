@@ -136,18 +136,23 @@ namespace FilteringImage.Core
 
       #region Обратное преобразование Фурье по строкам
 
+      //Количество результатов по строкам равно количеству строк
       InverseFourierResult[] rowResult = new InverseFourierResult[n];
+
+      //Количество значений мнимой и действительной части равно числу столбцов
       double[] re = new double[m];
       double[] im = new double[m];
 
+      //Цикл по строкам
       for(int y = 0; y <= height; y++)
       {
-        //Набираем значения по строкам
+        //Цикл по столбцам
         for(int x = 0; x <= length; x++)
         {
           re[x] = fourierResult[y].Re[x];
           im[x] = fourierResult[y].Im[x];
         }
+        //Вычисляем обратное преобразование по строкам
         rowResult[y] = IDFT(re, im);
       }
 
@@ -167,7 +172,7 @@ namespace FilteringImage.Core
           re[y] = rowResult[y].Re[x];
           im[y] = rowResult[y].Im[x];
         }
-        colResult[x] = IDFT(re, im); //Получаем отраженную матрицу значений
+        colResult[x] = IDFT(re, im);
       }
 
       #endregion
@@ -181,7 +186,7 @@ namespace FilteringImage.Core
         for(int y = 0; y <= height; y++)
         {
           /*
-            Помещаем значения действительной части 
+            Помещаем значения действительной части
             обратного пребобразования Фурье в реузльтирующий массив
           */
           result[y, x] = colResult[x].Re[y];
