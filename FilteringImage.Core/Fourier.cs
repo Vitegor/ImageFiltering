@@ -54,6 +54,8 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
+    #region Прямое преобразование
+
     /*
       Двумерное дискретное преобразование Фурье
 
@@ -127,85 +129,14 @@ namespace FilteringImage.Core
       return rowResult;
     }
 
-    public static double[,] IDFT2D(FourierResult[] fourierResult)
-    {
-      int m = fourierResult[0].Re.Length; //Количество столбцов
-      int n = fourierResult.Length; //Количество строк
-      int length = m - 1;
-      int height = n - 1;
-
-      #region Обратное преобразование Фурье по строкам
-
-      //Количество результатов по строкам равно количеству строк
-      InverseFourierResult[] rowResult = new InverseFourierResult[n];
-
-      //Количество значений мнимой и действительной части равно числу столбцов
-      double[] re = new double[m];
-      double[] im = new double[m];
-
-      //Цикл по строкам
-      for(int y = 0; y <= height; y++)
-      {
-        //Цикл по столбцам
-        for(int x = 0; x <= length; x++)
-        {
-          re[x] = fourierResult[y].Re[x];
-          im[x] = fourierResult[y].Im[x];
-        }
-        //Вычисляем обратное преобразование по строкам
-        rowResult[y] = IDFT(re, im);
-      }
-
-      #endregion
-
-      #region Обратное преобразование Фурье по столбцам
-
-      InverseFourierResult[] colResult = new InverseFourierResult[m];
-      re = new double[n];
-      im = new double[n];
-
-      for(int x = 0; x <= length; x++)
-      {
-        //Набираем значения действительной и мнимой частей по столбцам
-        for(int y = 0; y <= height; y++)
-        {
-          re[y] = rowResult[y].Re[x];
-          im[y] = rowResult[y].Im[x];
-        }
-        colResult[x] = IDFT(re, im);
-      }
-
-      #endregion
-
-      #region Обратное отражение результата преобразования Фурье по столбцам
-
-      double[,] result = new double[n, m];
-
-      for(int x = 0; x <= length; x++)
-      {
-        for(int y = 0; y <= height; y++)
-        {
-          /*
-            Помещаем значения действительной части
-            обратного пребобразования Фурье в реузльтирующий массив
-          */
-          result[y, x] = colResult[x].Re[y];
-        }
-      }
-
-      #endregion
-
-      return result;
-    }
-
     /*
-Одномерное дискретное преобразование Фурье
+      Одномерное дискретное преобразование Фурье
 
-Параметры:
-sourceFx - исходный массив значений функции
-m - количество отсчетов входной последовательности и
-    количество частотных отсчетов результата преобразования Фурье
-*/
+      Параметры:
+      sourceFx - исходный массив значений функции
+      m - количество отсчетов входной последовательности и
+          количество частотных отсчетов результата преобразования Фурье
+  */
     public static FourierResult DFT(double[] fx)
     {
       int m = fx.Length;
@@ -219,43 +150,6 @@ m - количество отсчетов входной последовате�
         {
           result.Re[u] += Re(fx[x], u, x, m);
           result.Im[u] += Im(fx[x], u, x, m);
-        }
-        result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
-      }
-
-      return result;
-    }
-
-    public static InverseFourierResult IDFT(double[] re, double[] im)
-    {
-      int m = re.Length;
-      int length = m - 1;
-      InverseFourierResult result = new InverseFourierResult(m);
-
-      for(int u = 0; u <= length; u++)
-      {
-        for(int x = 0; x <= length; x++)
-        {
-          result.Re[u] += InverseRe(re[x], u, x, m);
-          result.Im[u] += InverseIm(im[x], u, x, m);
-        }
-      }
-
-      return result;
-    }
-
-    private static FourierResult ComplexDFT(double[] re, double[] im)
-    {
-      int m = re.Length;
-      int length = m - 1;
-      FourierResult result = new FourierResult(m);
-
-      for(int u = 0; u <= length; u++)
-      {
-        for(int x = 0; x <= length; x++)
-        {
-          result.Re[u] += ComplexRe(re[x], im[x], u, x, m);
-          result.Im[u] += ComplexIm(re[x], im[x], u, x, m);
         }
         result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
       }
@@ -294,6 +188,55 @@ m - количество отсчетов входной последовате�
       return fx * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
+    /*
+      Вычисление значения спектра преобразования Фурье.
+
+      Параметры:
+        Re - значение действительной части прямого дискретного преобразования Фурьре
+        Im - значение мнимой части прямого дискретного преобразования Фурьре
+    */
+    private static double Spectrum(double Re, double Im)
+    {
+      return Math.Sqrt(Math.Pow(Re, 2) + Math.Pow(Im, 2));
+    }
+
+    /*
+      Вычисление значения спектра мощности (энергетического спектра).
+
+      Параметры:
+        spectrum - значение спектра преобразования Фурье
+    */
+    private static double PowerSpectrum(double spectrum)
+    {
+      return spectrum * spectrum;
+    }
+
+    /*
+      Одномерное комплексное прямое преобразование Фурье
+
+      Параметры:
+        re - действительная часть результата прямого преобразования Фурьре
+        im - мнимая часть результата прямого преобразования Фурьре
+    */
+    private static FourierResult ComplexDFT(double[] re, double[] im)
+    {
+      int m = re.Length;
+      int length = m - 1;
+      FourierResult result = new FourierResult(m);
+
+      for(int u = 0; u <= length; u++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          result.Re[u] += ComplexRe(re[x], im[x], u, x, m);
+          result.Im[u] += ComplexIm(re[x], im[x], u, x, m);
+        }
+        result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
+      }
+
+      return result;
+    }
+
     private static double ComplexRe(double re, double im, int u, int x, int m)
     {
       return
@@ -304,8 +247,112 @@ m - количество отсчетов входной последовате�
     private static double ComplexIm(double re, double im, int u, int x, int m)
     {
       return
-        im * Math.Cos((2 * Math.PI * x * u) / m) -
-        re * Math.Sin((2 * Math.PI * x * u) / m);
+        re * Math.Sin((2 * Math.PI * x * u) / m) -
+        im * Math.Cos((2 * Math.PI * x * u) / m);
+    }
+
+    #endregion
+
+    #region Обратное преобразование
+
+    /*
+      Двумерное дискретное обратное преобразование Фурье
+
+      Параметры:
+        fourierResult - результат двумерного дискретного прямого преобразования Фурье
+    */
+    public static double[,] IDFT2D(FourierResult[] fourierResult)
+    {
+      int m = fourierResult[0].Re.Length; //Количество столбцов
+      int n = fourierResult.Length; //Количество строк
+      int length = m - 1;
+      int height = n - 1;
+
+      #region По строкам
+
+      //Количество результатов по строкам равно количеству строк - n
+      InverseFourierResult[] rowResult = new InverseFourierResult[n];
+
+      //Количество значений мнимой и действительной частей равно числу столбцов - m
+      double[] re = new double[m];
+      double[] im = new double[m];
+
+      //Цикл по строкам
+      for(int y = 0; y <= height; y++)
+      {
+        //Цикл по столбцам
+        for(int x = 0; x <= length; x++)
+        {
+          re[x] = fourierResult[y].Re[x];
+          im[x] = fourierResult[y].Im[x];
+        }
+        //Вычисляем обратное преобразование по строке
+        rowResult[y] = IDFT(re, im);
+      }
+
+      #endregion
+
+      #region По столбцам
+
+      InverseFourierResult[] colResult = new InverseFourierResult[m];
+      re = new double[n];
+      im = new double[n];
+
+      //Цикл по столбцам
+      for(int x = 0; x <= length; x++)
+      {
+        //Цикл по строкам
+        for(int y = 0; y <= height; y++)
+        {
+          re[y] = rowResult[y].Re[x];
+          im[y] = rowResult[y].Im[x];
+
+        }
+        colResult[x] = IDFT(re, im);
+      }
+
+      #endregion
+
+      #region Обратное отражение
+
+      double[,] result = new double[n, m];
+
+      for (int y = 0; y <= height; y++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          result[y, x] = colResult[x].Re[y];
+        }
+      }
+
+      #endregion
+
+      return result;
+    }
+
+    /*
+      Одномерное обратное преобразование Фурье
+
+      Параметры:
+        re - действительная часть результата прямого преобразования Фурьре
+        im - мнимая часть результата прямого преобразования Фурьре
+    */
+    public static InverseFourierResult IDFT(double[] re, double[] im)
+    {
+      int m = re.Length;
+      int length = m - 1;
+      InverseFourierResult result = new InverseFourierResult(m);
+
+      for(int u = 0; u <= length; u++)
+      {
+        for(int x = 0; x <= length; x++)
+        {
+          result.Re[u] += InverseRe(re[x], u, x, m);
+          result.Im[u] += InverseIm(im[x], u, x, m);
+        }
+      }
+
+      return result;
     }
 
     /*
@@ -338,27 +385,6 @@ m - количество отсчетов входной последовате�
       return Im * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
-    /*
-      Вычисление значения спектра преобразования Фурье.
-
-      Параметры:
-        Re - значение действительной части прямого дискретного преобразования Фурьре
-        Im - значение мнимой части прямого дискретного преобразования Фурьре
-    */
-    private static double Spectrum(double Re, double Im)
-    {
-      return Math.Sqrt(Math.Pow(Re, 2) + Math.Pow(Im, 2));
-    }
-
-    /*
-      Вычисление значения спектра мощности (энергетического спектра).
-
-      Параметры:
-        spectrum - значение спектра преобразования Фурье
-    */
-    private static double PowerSpectrum(double spectrum)
-    {
-      return spectrum * spectrum;
-    }
+    #endregion
   }
 }
