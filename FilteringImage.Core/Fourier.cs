@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace FilteringImage.Core
 {
@@ -277,17 +278,25 @@ namespace FilteringImage.Core
       double[] re = new double[m];
       double[] im = new double[m];
 
-      //Цикл по строкам
-      for(int y = 0; y <= height; y++)
+      string path = @"C:\fourier_result.txt";
+
+      using(StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
       {
-        //Цикл по столбцам
-        for(int x = 0; x <= length; x++)
+        //Цикл по строкам
+        for(int y = 0; y <= height; y++)
         {
-          re[x] = fourierResult[y].Re[x];
-          im[x] = fourierResult[y].Im[x];
+          //Цикл по столбцам
+          for(int x = 0; x <= length; x++)
+          {
+            re[x] = fourierResult[y].Re[x];
+            im[x] = fourierResult[y].Im[x];
+
+            sw.Write("Re[{0,2},{1,2}]:{2,10:0.00} ", x, y, re[x]);
+            sw.WriteLine("Im[{0,2},{1,2}]:{2,10:0.00}", x, y, im[x]);
+          }
+          //Вычисляем обратное преобразование по строке
+          rowResult[y] = IDFT(re, im);
         }
-        //Вычисляем обратное преобразование по строке
-        rowResult[y] = IDFT(re, im);
       }
 
       #endregion
