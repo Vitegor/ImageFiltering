@@ -7,54 +7,6 @@ namespace FilteringImage.Core
 {
   public static class Fourier
   {
-    public static Bitmap GetImageSpectrum(Bitmap bitmap)
-    {
-      int MIN_COLOR = 0;
-      int MAX_COLOR = 255;
-      int length = bitmap.Width;
-      int height = bitmap.Height;
-
-      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
-      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      fxy = Helpers.CenteringFunction(fxy);
-      FourierResult[] fourierResult = DFT2D(fxy);
-
-      #region Логарифмирование, нахождение минимального и максимального значений
-
-      double min = 0;
-      double max = 0;
-      double tempValue;
-      for(int i = 0; i < height; i++)
-      {
-        for(int j = 0; j < length; j++)
-        {
-          tempValue = fourierResult[i].Spectrum[j];
-          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
-          if(tempValue < min) min = tempValue;
-          if(tempValue > max) max = tempValue;
-          fourierResult[i].Spectrum[j] = tempValue;
-        }
-      }
-
-      #endregion
-
-      int x, y = 0;
-      byte tempColor = 0;
-      foreach(var row in fourierResult)
-      {
-        x = 0;
-        foreach(var item in row.Spectrum)
-        {
-          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
-          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
-          x++;
-        }
-        y++;
-      }
-
-      return bitmap;
-    }
-
     #region Прямое преобразование
 
     /*
@@ -74,7 +26,7 @@ namespace FilteringImage.Core
       int length = m - 1;
       int height = n - 1;
 
-      #region Преобразование Фурье по строкам
+      #region По строкам
 
       FourierResult[] rowResult = new FourierResult[n];
       double[] fx = new double[m];
@@ -90,7 +42,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region Преобразование Фурье по столбцам
+      #region По столбцам
 
       FourierResult[] colResult = new FourierResult[m];
       double[] re = new double[n];
@@ -109,7 +61,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region Обратное отражение результата преобразования Фурье по столбцам
+      #region Обратное отражение
 
       for(int x = 0; x <= length; x++)
       {
@@ -307,17 +259,24 @@ namespace FilteringImage.Core
       re = new double[n];
       im = new double[n];
 
-      //Цикл по столбцам
-      for(int x = 0; x <= length; x++)
-      {
-        //Цикл по строкам
-        for(int y = 0; y <= height; y++)
-        {
-          re[y] = rowResult[y].Re[x];
-          im[y] = rowResult[y].Im[x];
+      path = @"C:\inverted_row_fourier_result.txt";
 
+      using(StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+      {
+        //Цикл по столбцам
+        for(int x = 0; x <= length; x++)
+        {
+          //Цикл по строкам
+          for(int y = 0; y <= height; y++)
+          {
+            re[y] = rowResult[y].Re[x];
+            im[y] = rowResult[y].Im[x];
+
+            sw.Write("Re[{0,2},{1,2}]:{2,10:0.00} ", x, y, re[y]);
+            sw.WriteLine("Im[{0,2},{1,2}]:{2,10:0.00}", x, y, im[y]);
+          }
+          colResult[x] = IDFT(re, im);
         }
-        colResult[x] = IDFT(re, im);
       }
 
       #endregion
@@ -395,5 +354,53 @@ namespace FilteringImage.Core
     }
 
     #endregion
+
+    public static Bitmap GetImageSpectrum(Bitmap bitmap)
+    {
+      int MIN_COLOR = 0;
+      int MAX_COLOR = 255;
+      int length = bitmap.Width;
+      int height = bitmap.Height;
+
+      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
+      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
+      fxy = Helpers.CenteringFunction(fxy);
+      FourierResult[] fourierResult = DFT2D(fxy);
+
+      #region Логарифмирование, нахождение минимального и максимального значений
+
+      double min = 0;
+      double max = 0;
+      double tempValue;
+      for(int i = 0; i < height; i++)
+      {
+        for(int j = 0; j < length; j++)
+        {
+          tempValue = fourierResult[i].Spectrum[j];
+          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
+          if(tempValue < min) min = tempValue;
+          if(tempValue > max) max = tempValue;
+          fourierResult[i].Spectrum[j] = tempValue;
+        }
+      }
+
+      #endregion
+
+      int x, y = 0;
+      byte tempColor = 0;
+      foreach(var row in fourierResult)
+      {
+        x = 0;
+        foreach(var item in row.Spectrum)
+        {
+          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
+          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
+          x++;
+        }
+        y++;
+      }
+
+      return bitmap;
+    }
   }
 }
