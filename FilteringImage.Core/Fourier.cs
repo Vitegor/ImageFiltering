@@ -1,12 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 
 namespace FilteringImage.Core
 {
   public static class Fourier
   {
+    public static Bitmap GetImageSpectrum(Bitmap bitmap)
+    {
+      int MIN_COLOR = 0;
+      int MAX_COLOR = 255;
+      int length = bitmap.Width;
+      int height = bitmap.Height;
+
+      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
+      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
+      fxy = Helpers.CenteringFunction(fxy);
+      FourierResult[] fourierResult = DFT2D(fxy);
+
+      #region Логарифмирование, нахождение минимального и максимального значений
+
+      double min = 0;
+      double max = 0;
+      double tempValue;
+      for(int i = 0; i < height; i++)
+      {
+        for(int j = 0; j < length; j++)
+        {
+          tempValue = fourierResult[i].Spectrum[j];
+          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
+          if(tempValue < min) min = tempValue;
+          if(tempValue > max) max = tempValue;
+          fourierResult[i].Spectrum[j] = tempValue;
+        }
+      }
+
+      #endregion
+
+      int x, y = 0;
+      byte tempColor = 0;
+      foreach(var row in fourierResult)
+      {
+        x = 0;
+        foreach(var item in row.Spectrum)
+        {
+          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
+          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
+          x++;
+        }
+        y++;
+      }
+
+      return bitmap;
+    }
+
     #region Прямое преобразование
 
     /*
@@ -26,7 +73,7 @@ namespace FilteringImage.Core
       int length = m - 1;
       int height = n - 1;
 
-      #region По строкам
+      #region Преобразование Фурье по строкам
 
       FourierResult[] rowResult = new FourierResult[n];
       double[] fx = new double[m];
@@ -42,7 +89,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region По столбцам
+      #region Преобразование Фурье по столбцам
 
       FourierResult[] colResult = new FourierResult[m];
       double[] re = new double[n];
@@ -61,7 +108,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region Обратное отражение
+      #region Обратное отражение результата преобразования Фурье по столбцам
 
       for(int x = 0; x <= length; x++)
       {
@@ -111,7 +158,7 @@ namespace FilteringImage.Core
     }
 
     /*
-      Вычисление значения действительной части прямного дискретного преобразования Фурье.
+      Вычисление действительной части
       
       Параметры:
         fx - значение функции
@@ -126,7 +173,7 @@ namespace FilteringImage.Core
     }
 
     /*
-      Вычисление значения мнимой части прямного дискретного преобразования Фурье.
+      Вычисление мнимой части.
 
       Параметры:
         fx - значение функции
@@ -142,15 +189,15 @@ namespace FilteringImage.Core
     }
 
     /*
-      Вычисление значения спектра преобразования Фурье.
+      Вычисление значения спектра.
 
       Параметры:
-        Re - значение действительной части прямого дискретного преобразования Фурьре
-        Im - значение мнимой части прямого дискретного преобразования Фурьре
+        re - значение действительной части прямого дискретного преобразования Фурьре
+        im - значение мнимой части прямого дискретного преобразования Фурьре
     */
-    private static double Spectrum(double Re, double Im)
+    private static double Spectrum(double re, double im)
     {
-      return Math.Sqrt(Math.Pow(Re, 2) + Math.Pow(Im, 2));
+      return Math.Sqrt(Math.Pow(re, 2) + Math.Pow(im, 2));
     }
 
     /*
@@ -190,6 +237,17 @@ namespace FilteringImage.Core
       return result;
     }
 
+    /*
+      Вычисление значения действительной части, комплексное.
+
+      Параметры:
+        re - действительная часть преобразования
+        im - мнимая часть преобразования
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+    */
     private static double ComplexRe(double re, double im, int u, int x, int m)
     {
       return
@@ -197,11 +255,22 @@ namespace FilteringImage.Core
         im * Math.Sin((2 * Math.PI * x * u) / m);
     }
 
+    /*
+      Вычисление значения мнимой части, комплексное.
+
+      Параметры:
+        re - действительная часть преобразования
+        im - мнимая часть преобразования
+        u - индекс частотной области
+        x - временной индекс входных отсчетов
+        m - количество отсчетов входной последовательности и
+            количество частотных отсчетов результата преобразования Фурье
+    */
     private static double ComplexIm(double re, double im, int u, int x, int m)
     {
       return
-        re * Math.Sin((2 * Math.PI * x * u) / m) -
-        im * Math.Cos((2 * Math.PI * x * u) / m);
+        im * Math.Cos((2 * Math.PI * x * u) / m) -
+        re * Math.Sin((2 * Math.PI * x * u) / m);
     }
 
     #endregion
@@ -230,25 +299,17 @@ namespace FilteringImage.Core
       double[] re = new double[m];
       double[] im = new double[m];
 
-      string path = @"C:\fourier_result.txt";
-
-      using(StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+      //Цикл по строкам
+      for(int y = 0; y <= height; y++)
       {
-        //Цикл по строкам
-        for(int y = 0; y <= height; y++)
+        //Цикл по столбцам
+        for(int x = 0; x <= length; x++)
         {
-          //Цикл по столбцам
-          for(int x = 0; x <= length; x++)
-          {
-            re[x] = fourierResult[y].Re[x];
-            im[x] = fourierResult[y].Im[x];
-
-            sw.Write("Re[{0,2},{1,2}]:{2,10:0.00} ", x, y, re[x]);
-            sw.WriteLine("Im[{0,2},{1,2}]:{2,10:0.00}", x, y, im[x]);
-          }
-          //Вычисляем обратное преобразование по строке
-          rowResult[y] = IDFT(re, im);
+          re[x] = fourierResult[y].Re[x];
+          im[x] = fourierResult[y].Im[x];
         }
+        //Вычисляем обратное преобразование по строке
+        rowResult[y] = IDFT(re, im);
       }
 
       #endregion
@@ -259,24 +320,17 @@ namespace FilteringImage.Core
       re = new double[n];
       im = new double[n];
 
-      path = @"C:\inverted_row_fourier_result.txt";
-
-      using(StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+      //Цикл по столбцам
+      for(int x = 0; x <= length; x++)
       {
-        //Цикл по столбцам
-        for(int x = 0; x <= length; x++)
+        //Цикл по строкам
+        for(int y = 0; y <= height; y++)
         {
-          //Цикл по строкам
-          for(int y = 0; y <= height; y++)
-          {
-            re[y] = rowResult[y].Re[x];
-            im[y] = rowResult[y].Im[x];
+          re[y] = rowResult[y].Re[x];
+          im[y] = rowResult[y].Im[x];
 
-            sw.Write("Re[{0,2},{1,2}]:{2,10:0.00} ", x, y, re[y]);
-            sw.WriteLine("Im[{0,2},{1,2}]:{2,10:0.00}", x, y, im[y]);
-          }
-          colResult[x] = IDFT(re, im);
         }
+        colResult[x] = IDFT(re, im);
       }
 
       #endregion
@@ -315,8 +369,8 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= length; x++)
         {
-          result.Re[u] += InverseRe(re[x], u, x, m);
-          result.Im[u] += InverseIm(im[x], u, x, m);
+          result.Re[u] += InverseRe(re[x], im[x], u, x, m);
+          result.Im[u] += InverseIm(re[x], im[x], u, x, m);
         }
       }
 
@@ -324,7 +378,7 @@ namespace FilteringImage.Core
     }
 
     /*
-      Вычисление значения действительной части обратного дискретного преобразования Фурье.
+      Вычисление значения действительной части обратного преобразования.
 
       Параметры:
         Re - значение действительной части прямонго преобразования Фурьре
@@ -333,13 +387,15 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double InverseRe(double Re, int u, int x, int m)
+    private static double InverseRe(double re, double im, int u, int x, int m)
     {
-      return Re * Math.Cos((2 * Math.PI * u * x) / m);
+      return 
+        re * Math.Cos((2 * Math.PI * u * x) / m) -
+        im * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
     /*
-      Вычисление значения мнимой части обратного дискретного преобразования Фурье.
+      Вычисление значения мнимой части обратного преобразования.
 
       Параметры:
         Im - значение мнимой части прямонго преобразования Фурьре
@@ -348,59 +404,13 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double InverseIm(double Im, int u, int x, int m)
+    private static double InverseIm(double re, double im, int u, int x, int m)
     {
-      return Im * Math.Sin((2 * Math.PI * u * x) / m);
+      return 
+        im * Math.Cos((2 * Math.PI * u * x) / m) +
+        re * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
     #endregion
-
-    public static Bitmap GetImageSpectrum(Bitmap bitmap)
-    {
-      int MIN_COLOR = 0;
-      int MAX_COLOR = 255;
-      int length = bitmap.Width;
-      int height = bitmap.Height;
-
-      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
-      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      fxy = Helpers.CenteringFunction(fxy);
-      FourierResult[] fourierResult = DFT2D(fxy);
-
-      #region Логарифмирование, нахождение минимального и максимального значений
-
-      double min = 0;
-      double max = 0;
-      double tempValue;
-      for(int i = 0; i < height; i++)
-      {
-        for(int j = 0; j < length; j++)
-        {
-          tempValue = fourierResult[i].Spectrum[j];
-          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
-          if(tempValue < min) min = tempValue;
-          if(tempValue > max) max = tempValue;
-          fourierResult[i].Spectrum[j] = tempValue;
-        }
-      }
-
-      #endregion
-
-      int x, y = 0;
-      byte tempColor = 0;
-      foreach(var row in fourierResult)
-      {
-        x = 0;
-        foreach(var item in row.Spectrum)
-        {
-          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
-          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
-          x++;
-        }
-        y++;
-      }
-
-      return bitmap;
-    }
   }
 }
