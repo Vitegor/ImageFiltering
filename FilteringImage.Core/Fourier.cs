@@ -6,54 +6,6 @@ namespace FilteringImage.Core
 {
   public static class Fourier
   {
-    public static Bitmap GetImageSpectrum(Bitmap bitmap)
-    {
-      int MIN_COLOR = 0;
-      int MAX_COLOR = 255;
-      int length = bitmap.Width;
-      int height = bitmap.Height;
-
-      bitmap = Helpers.GetImageInColorScale(new Bitmap(bitmap));
-      double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      fxy = Helpers.CenteringFunction(fxy);
-      FourierResult[] fourierResult = DFT2D(fxy);
-
-      #region Логарифмирование, нахождение минимального и максимального значений
-
-      double min = 0;
-      double max = 0;
-      double tempValue;
-      for(int i = 0; i < height; i++)
-      {
-        for(int j = 0; j < length; j++)
-        {
-          tempValue = fourierResult[i].Spectrum[j];
-          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
-          if(tempValue < min) min = tempValue;
-          if(tempValue > max) max = tempValue;
-          fourierResult[i].Spectrum[j] = tempValue;
-        }
-      }
-
-      #endregion
-
-      int x, y = 0;
-      byte tempColor = 0;
-      foreach(var row in fourierResult)
-      {
-        x = 0;
-        foreach(var item in row.Spectrum)
-        {
-          tempColor = (byte)Helpers.GetProportionalValue(item, min, max, MIN_COLOR, MAX_COLOR);
-          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
-          x++;
-        }
-        y++;
-      }
-
-      return bitmap;
-    }
-
     #region Прямое преобразование
 
     /*
@@ -73,7 +25,7 @@ namespace FilteringImage.Core
       int length = m - 1;
       int height = n - 1;
 
-      #region Преобразование Фурье по строкам
+      #region По строкам
 
       FourierResult[] rowResult = new FourierResult[n];
       double[] fx = new double[m];
@@ -89,7 +41,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region Преобразование Фурье по столбцам
+      #region По столбцам
 
       FourierResult[] colResult = new FourierResult[m];
       double[] re = new double[n];
@@ -108,7 +60,7 @@ namespace FilteringImage.Core
 
       #endregion
 
-      #region Обратное отражение результата преобразования Фурье по столбцам
+      #region Обратное отражение
 
       for(int x = 0; x <= length; x++)
       {
@@ -116,7 +68,7 @@ namespace FilteringImage.Core
         {
           /*
             Значение помещаем в массив результатов по строкам т.к. как он соответствует
-            размерам исходной функции 
+            размерам исходной функции
           */
           rowResult[y].Re[x] = colResult[x].Re[y];
           rowResult[y].Im[x] = colResult[x].Im[y];
@@ -159,29 +111,6 @@ namespace FilteringImage.Core
     }
 
     /*
-      Вычисление значения спектра.
-
-      Параметры:
-        re - значение действительной части прямого дискретного преобразования Фурьре
-        im - значение мнимой части прямого дискретного преобразования Фурьре
-    */
-    private static double Spectrum(double re, double im)
-    {
-      return Math.Sqrt(Math.Pow(re, 2) + Math.Pow(im, 2));
-    }
-
-    /*
-      Вычисление значения спектра мощности (энергетического спектра).
-
-      Параметры:
-        spectrum - значение спектра преобразования Фурье
-    */
-    private static double PowerSpectrum(double spectrum)
-    {
-      return spectrum * spectrum;
-    }
-
-    /*
       Вычисление значения действительной части, комплексное.
 
       Параметры:
@@ -217,6 +146,29 @@ namespace FilteringImage.Core
         re * Math.Sin((2 * Math.PI * x * u) / m);
     }
 
+    /*
+      Вычисление значения спектра.
+
+      Параметры:
+        re - значение действительной части прямого дискретного преобразования Фурьре
+        im - значение мнимой части прямого дискретного преобразования Фурьре
+    */
+    private static double Spectrum(double re, double im)
+    {
+      return Math.Sqrt(Math.Pow(re, 2) + Math.Pow(im, 2));
+    }
+
+    /*
+      Вычисление значения спектра мощности (энергетического спектра).
+
+      Параметры:
+        spectrum - значение спектра преобразования Фурье
+    */
+    private static double PowerSpectrum(double spectrum)
+    {
+      return spectrum * spectrum;
+    }
+
     #endregion
 
     #region Обратное преобразование
@@ -243,16 +195,13 @@ namespace FilteringImage.Core
       double[] re = new double[m];
       double[] im = new double[m];
 
-      //Цикл по строкам
       for(int y = 0; y <= height; y++)
       {
-        //Цикл по столбцам
         for(int x = 0; x <= length; x++)
         {
           re[x] = fourierResult[y].Re[x];
           im[x] = fourierResult[y].Im[x];
         }
-        //Вычисляем обратное преобразование по строке
         rowResult[y] = IDFT(re, im);
       }
 
@@ -272,7 +221,6 @@ namespace FilteringImage.Core
         {
           re[y] = rowResult[y].Re[x];
           im[y] = rowResult[y].Im[x];
-
         }
         colResult[x] = IDFT(re, im);
       }

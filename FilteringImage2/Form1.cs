@@ -78,7 +78,7 @@ namespace FilteringImage2
     //Отрисовка спектра исходного изображения
     private void DrowSourceSpectrum()
     {
-      srcImgSpectrum.Image = Fourier.GetImageSpectrum(new Bitmap(sourceBitmap));
+      srcImgSpectrum.Image = Helpers.GetImageSpectrum(new Bitmap(sourceBitmap));
     }
 
     private void DrowChartSpectrum()
@@ -133,7 +133,7 @@ namespace FilteringImage2
     //Отрисовка спектра отфильтрованного изображения
     private void DrowFilteredImageSpectrum()
     {
-      resultImgSpectrum.Image = Fourier.GetImageSpectrum(new Bitmap(resultImage.Image));
+      resultImgSpectrum.Image = Helpers.GetImageSpectrum(new Bitmap(resultImage.Image));
     }
 
     //Получение введенной частоты среза
