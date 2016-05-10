@@ -33,9 +33,9 @@ namespace FilteringImage.Test.Fourier
       Series imSeries = chartIm.Series.Add("Мнимая часть");
       Series restoredSeries = chartRestored.Series.Add("Восстановленный сигнал");
 
-      for(int i = 0; i <= length; i++) fx[i] = 1; //Инициализация значений
+      for(int i = 0; i <= length; i++) fx[i] = i; //Инициализация значений
       for(int i = 0; i <= length; i++) sourceSeries.Points.AddXY(i, fx[i]);
-      for(int i = 0; i <= length; i++) fx[i] = fx[i] * Core.Helpers.Step(i); //Центрирование спектра
+      for(int i = 0; i <= length; i++) fx[i] = fx[i] * Helpers.Step(i); //Центрирование спектра
 
       FourierResult fourierResult = Core.Fourier.DFT(fx); //Прямое преобразование
       InverseFourierResult restoredResult = Core.Fourier.IDFT(fourierResult.Re, fourierResult.Im); //Обратное преобразование
@@ -57,7 +57,7 @@ namespace FilteringImage.Test.Fourier
         spectrumSeries.Points.AddXY(i, fourierResult.Spectrum[i]);
         reSeries.Points.AddXY(i, fourierResult.Re[i]);
         imSeries.Points.AddXY(i, fourierResult.Im[i]);
-        restoredSeries.Points.AddXY(i, ((restoredResult.Re[i] + restoredResult.Im[i]) / m) * Core.Helpers.Step(i));
+        restoredSeries.Points.AddXY(i, ((restoredResult.Re[i] + restoredResult.Im[i]) / m) * Helpers.Step(i));
       }
     }
   }

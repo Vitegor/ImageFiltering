@@ -103,7 +103,7 @@ namespace FilteringImage.Core
           re[y] = rowResult[y].Re[x];
           im[y] = rowResult[y].Im[x];
         }
-        colResult[x] = ComplexDFT(re, im);
+        colResult[x] = DFT(re, im);
       }
 
       #endregion
@@ -133,14 +133,14 @@ namespace FilteringImage.Core
       Одномерное дискретное преобразование Фурье
 
       Параметры:
-      sourceFx - исходный массив значений функции
-      m - количество отсчетов входной последовательности и
-          количество частотных отсчетов результата преобразования Фурье
-  */
-    public static FourierResult DFT(double[] fx)
+      re - действительная часть
+      im - мнимая часть
+    */
+    public static FourierResult DFT(double[] re, double[] im = null)
     {
-      int m = fx.Length;
+      int m = re.Length;
       int length = m - 1;
+      double _im = 0; //Для определения мнимой части
 
       FourierResult result = new FourierResult(m);
 
@@ -148,44 +148,14 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= length; x++)
         {
-          result.Re[u] += Re(fx[x], u, x, m);
-          result.Im[u] += Im(fx[x], u, x, m);
+          _im = im == null ? 0 : im[x];
+          result.Re[u] += Re(re[x], _im, u, x, m);
+          result.Im[u] += Im(re[x], _im, u, x, m);
         }
         result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
       }
 
       return result;
-    }
-
-    /*
-      Вычисление действительной части
-      
-      Параметры:
-        fx - значение функции
-        u - индекс частотной области
-        x - временной индекс входных отсчетов
-        m - количество отсчетов входной последовательности и
-            количество частотных отсчетов результата преобразования Фурье
-    */
-    private static double Re(double fx, int u, int x, int m)
-    {
-      return fx * Math.Cos((2 * Math.PI * u * x) / m);
-    }
-
-    /*
-      Вычисление мнимой части.
-
-      Параметры:
-        fx - значение функции
-        u - индекс частотной области
-        x - временной индекс входных отсчетов
-        m - количество отсчетов входной последовательности и
-            количество частотных отсчетов результата преобразования Фурье
-
-    */
-    private static double Im(double fx, int u, int x, int m)
-    {
-      return fx * Math.Sin((2 * Math.PI * u * x) / m);
     }
 
     /*
@@ -212,32 +182,6 @@ namespace FilteringImage.Core
     }
 
     /*
-      Одномерное комплексное прямое преобразование Фурье
-
-      Параметры:
-        re - действительная часть результата прямого преобразования Фурьре
-        im - мнимая часть результата прямого преобразования Фурьре
-    */
-    private static FourierResult ComplexDFT(double[] re, double[] im)
-    {
-      int m = re.Length;
-      int length = m - 1;
-      FourierResult result = new FourierResult(m);
-
-      for(int u = 0; u <= length; u++)
-      {
-        for(int x = 0; x <= length; x++)
-        {
-          result.Re[u] += ComplexRe(re[x], im[x], u, x, m);
-          result.Im[u] += ComplexIm(re[x], im[x], u, x, m);
-        }
-        result.Spectrum[u] = Spectrum(result.Re[u], result.Im[u]);
-      }
-
-      return result;
-    }
-
-    /*
       Вычисление значения действительной части, комплексное.
 
       Параметры:
@@ -248,7 +192,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ComplexRe(double re, double im, int u, int x, int m)
+    private static double Re(double re, double im, int u, int x, int m)
     {
       return
         re * Math.Cos((2 * Math.PI * x * u) / m) +
@@ -266,7 +210,7 @@ namespace FilteringImage.Core
         m - количество отсчетов входной последовательности и
             количество частотных отсчетов результата преобразования Фурье
     */
-    private static double ComplexIm(double re, double im, int u, int x, int m)
+    private static double Im(double re, double im, int u, int x, int m)
     {
       return
         im * Math.Cos((2 * Math.PI * x * u) / m) -
