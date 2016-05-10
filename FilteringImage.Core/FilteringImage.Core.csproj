@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ColorChannel.cs" />
     <Compile Include="Filter.cs" />
+    <Compile Include="FilterResult.cs" />
     <Compile Include="Fourier.cs" />
     <Compile Include="FourierResult.cs" />
     <Compile Include="Helpers.cs" />

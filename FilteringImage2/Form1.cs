@@ -64,14 +64,18 @@ namespace FilteringImage2
     //Применение Идеального фильтра низких частот
     private void btnLowPassFilter_Click(object sender, EventArgs e)
     {
-      resultImage.Image = Filter.FilterIdealLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      FilterResult fr = Filter.FilterIdealLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      resultImage.Image = fr.Bitmap;
+      lblResultImageEnergy.Text = Convert.ToString(fr.Energy);
       DrowFilteredImageSpectrum();
     }
 
     //Применение Гауссова фильтра низких частот
     private void btnGaussLowPassFilter_Click(object sender, EventArgs e)
     {
-      resultImage.Image = Filter.FilterGaussLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      FilterResult fr = Filter.FilterGaussLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
+      resultImage.Image = fr.Bitmap;
+      lblResultImageEnergy.Text = Convert.ToString(fr.Energy);
       DrowFilteredImageSpectrum();
     }
 
