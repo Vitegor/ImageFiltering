@@ -235,7 +235,7 @@ namespace FilteringImage.Core
       {
         for(int x = 0; x <= length; x++)
         {
-          result[y, x] = colResult[x].Re[y];
+          result[y, x] = colResult[x].Re[y] / (m * n);
         }
       }
 
