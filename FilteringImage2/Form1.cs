@@ -59,6 +59,7 @@ namespace FilteringImage2
     {
       resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
       resultImgSpectrum.Image = null;
+      lblResultImageEnergy.Text = "null";
     }
 
     //Применение Идеального фильтра низких частот
@@ -147,6 +148,11 @@ namespace FilteringImage2
     }
 
     private void grboxFiltering_Enter(object sender, EventArgs e)
+    {
+
+    }
+
+    private void label9_Click(object sender, EventArgs e)
     {
 
     }

@@ -141,19 +141,19 @@ namespace FilteringImage.Core
       int height = n - 1;
       double d;
       byte h;
-      double energy1 = 0;
-      double energy2 = 0;
+      double energyBefore = 0;
+      double energyAfter = 0;
 
       for(int y = 0; y <= height; y++)
       {
         for(int x = 0; x <= length; x++)
         {
-          energy1 += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          energyBefore += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
           d = Math.Sqrt(Math.Pow(x - m / 2, 2) + Math.Pow(y - n / 2, 2));
           h = (byte)(d <= cutOffFrequency ? 1 : 0);
           dft[y].Re[x] *= h;
           dft[y].Im[x] *= h;
-          energy2 += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          energyAfter += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
         }
       }
 
@@ -162,7 +162,7 @@ namespace FilteringImage.Core
 
       FilterResult result = new FilterResult();
       result.Bitmap = Helpers.GenerateBitmap(fxy);
-      result.Energy = energy2 / energy1 * 100;
+      result.Energy = Math.Round(energyAfter / energyBefore * 100, 2);
 
       return result;
     }
@@ -180,19 +180,19 @@ namespace FilteringImage.Core
       int height = n - 1;
       double d;
       double h;
-      double energy1 = 0;
-      double energy2 = 0;
+      double energyBefore = 0;
+      double energyAfter = 0;
 
       for(int y = 0; y <= height; y++)
       {
         for(int x = 0; x <= length; x++)
         {
-          energy1 += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          energyBefore += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
           d = Math.Sqrt(Math.Pow(x - m / 2, 2) + Math.Pow(y - n / 2, 2));
           h = Math.Exp((-1 * d*d) / (2 * cutOffFrequency * cutOffFrequency));
           dft[y].Re[x] *= h;
           dft[y].Im[x] *= h;
-          energy2 += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          energyAfter += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
         }
       }
 
@@ -201,7 +201,7 @@ namespace FilteringImage.Core
 
       FilterResult result = new FilterResult();
       result.Bitmap = Helpers.GenerateBitmap(fxy);
-      result.Energy = energy2 / energy1 * 100;
+      result.Energy = Math.Round(energyAfter / energyBefore * 100, 2);
 
       return result;
     }

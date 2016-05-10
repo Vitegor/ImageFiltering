@@ -28,7 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       this.resultImage = new System.Windows.Forms.PictureBox();
       this.sourceImage = new System.Windows.Forms.PictureBox();
       this.btnResetImage = new System.Windows.Forms.Button();
@@ -52,6 +52,7 @@
       this.imgSpectrumFilter = new System.Windows.Forms.PictureBox();
       this.label5 = new System.Windows.Forms.Label();
       this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.label8 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.resultImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.sourceImage)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.srcImgSpectrum)).BeginInit();
@@ -190,6 +191,7 @@
       // 
       // grboxFiltering
       // 
+      this.grboxFiltering.Controls.Add(this.label8);
       this.grboxFiltering.Controls.Add(this.numCutOffFrequency);
       this.grboxFiltering.Controls.Add(this.lblResultImageEnergy);
       this.grboxFiltering.Controls.Add(this.label7);
@@ -211,12 +213,17 @@
       this.numCutOffFrequency.Name = "numCutOffFrequency";
       this.numCutOffFrequency.Size = new System.Drawing.Size(120, 20);
       this.numCutOffFrequency.TabIndex = 34;
+      this.numCutOffFrequency.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
       // 
       // lblResultImageEnergy
       // 
       this.lblResultImageEnergy.AutoSize = true;
       this.lblResultImageEnergy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.lblResultImageEnergy.Location = new System.Drawing.Point(246, 98);
+      this.lblResultImageEnergy.Location = new System.Drawing.Point(216, 99);
       this.lblResultImageEnergy.Name = "lblResultImageEnergy";
       this.lblResultImageEnergy.Size = new System.Drawing.Size(37, 20);
       this.lblResultImageEnergy.TabIndex = 33;
@@ -275,13 +282,23 @@
       // 
       // chart1
       // 
-      chartArea1.Name = "ChartArea1";
-      this.chart1.ChartAreas.Add(chartArea1);
+      chartArea4.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea4);
       this.chart1.Location = new System.Drawing.Point(758, 277);
       this.chart1.Name = "chart1";
       this.chart1.Size = new System.Drawing.Size(340, 210);
       this.chart1.TabIndex = 30;
       this.chart1.Text = "chart1";
+      // 
+      // label8
+      // 
+      this.label8.AutoSize = true;
+      this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.label8.Location = new System.Drawing.Point(268, 99);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(24, 20);
+      this.label8.TabIndex = 35;
+      this.label8.Text = "%";
       // 
       // Form1
       // 
@@ -345,6 +362,7 @@
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.NumericUpDown numCutOffFrequency;
     private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+    private System.Windows.Forms.Label label8;
   }
 }
 
