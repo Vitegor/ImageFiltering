@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using FilteringImage.Core;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FilteringImage2
 {
@@ -22,6 +15,7 @@ namespace FilteringImage2
       InitializeComponent();
     }
 
+    //Открытыие изображения
     private void btnGetImage_Click(object sender, EventArgs e)
     {
       openImage.Filter = ImageFormatSettings.ExtensionsPatternsForOpen;
@@ -40,6 +34,7 @@ namespace FilteringImage2
       }
     }
 
+    //Сохранение изображения
     private void btnSaveImage_Click(object sender, EventArgs e)
     {
       if(resultImage.Image != null)
@@ -102,11 +97,6 @@ namespace FilteringImage2
         return Convert.ToDouble(numCutOffFrequency.Value);
 
       return 0.001;
-    }
-
-    private void grboxFiltering_Enter(object sender, EventArgs e)
-    {
-
     }
   }
 }

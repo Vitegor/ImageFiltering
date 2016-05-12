@@ -202,7 +202,6 @@
       this.grboxFiltering.TabIndex = 27;
       this.grboxFiltering.TabStop = false;
       this.grboxFiltering.Text = "Filtering";
-      this.grboxFiltering.Enter += new System.EventHandler(this.grboxFiltering_Enter);
       // 
       // label8
       // 
