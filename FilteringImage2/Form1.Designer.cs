@@ -217,6 +217,11 @@
       // numCutOffFrequency
       // 
       this.numCutOffFrequency.Location = new System.Drawing.Point(123, 32);
+      this.numCutOffFrequency.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
       this.numCutOffFrequency.Name = "numCutOffFrequency";
       this.numCutOffFrequency.Size = new System.Drawing.Size(120, 20);
       this.numCutOffFrequency.TabIndex = 34;
