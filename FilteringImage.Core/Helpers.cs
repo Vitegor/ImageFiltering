@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Drawing;
-using FilteringImage.Core;
 
 namespace FilteringImage.Core
 {
+  //Класс вспомогательных методов
   public static class Helpers
   {
+    /*
+      Получение спектра изображения.
+
+      Параметры:
+        bitmap - битовая карта исходного изображения
+    */
     public static Bitmap GetImageSpectrum(Bitmap bitmap)
     {
-      int MIN_COLOR = 0;
-      int MAX_COLOR = 255;
+      const int MIN_COLOR = 0;
+      const int MAX_COLOR = 255;
       int length = bitmap.Width;
       int height = bitmap.Height;
 
@@ -54,11 +60,66 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
+    /*
+      Получение изображения из значений функции с пропорцинальным приведением значений к градациям цвета.
+
+      Параметры:
+        fxy - исходная функция
+    */
+    public static Bitmap GetProportionalImage(double[,] fxy)
+    {
+      const int MIN_COLOR = 0;
+      const int MAX_COLOR = 255;
+      int length = fxy.GetLength(1) - 1;
+      int height = fxy.GetLength(0) - 1;
+      double min = 0;
+      double max = 0;
+
+      for(int y = 0; y < height; y++)
+      {
+        for(int x = 0; x < length; x++)
+        {
+          if(fxy[y, x] < min) min = fxy[y, x];
+          if(fxy[y, x] > max) max = fxy[y, x];
+        }
+      }
+
+      byte tempColor = 0;
+      Bitmap bitmap = new Bitmap(fxy.GetLength(1), fxy.GetLength(0));
+
+      for(int y = 0; y < height; y++)
+      {
+        for(int x = 0; x < length; x++)
+        {
+          tempColor = (byte)GetProportionalValue(fxy[y, x], min, max, MIN_COLOR, MAX_COLOR);
+          bitmap.SetPixel(x, y, Color.FromArgb(tempColor, 0, 0));
+        }
+      }
+
+      return bitmap;
+    }
+
+    /*
+      Получение пропорционального значения .
+
+      Параметры:
+        value - исходное значение
+        srcMin - минимальное значение исходного множества
+        srcMax - максимальное значение исходного множества
+        resMin - минимальное значение целевого множества
+        resMax - максимальное значение целевого множества
+    */
     public static double GetProportionalValue(double value, double srcMin, double srcMax, double resMin, double resMax)
     {
       return (resMax - resMin) * ((value - srcMin) / (srcMax - srcMin));
     }
 
+    /*
+      Получение массива значений из битовой карты изображения.
+
+      Параметры:
+        bitmap - битовая карта исходного изображения
+    */
     public static double[,] GetBitmapFunction(Bitmap bitmap)
     {
       int m = bitmap.Width;
@@ -79,6 +140,12 @@ namespace FilteringImage.Core
       return fxy;
     }
 
+    /*
+      Получение изображения в градациях одного цвета (красного).
+
+      Параметры:
+        bitmap - битовая карта исходного изображения
+    */
     public static Bitmap GetImageInColorScale(Bitmap bitmap)
     {
       int length = bitmap.Width - 1;
@@ -97,6 +164,12 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
+    /*
+      Центрирование функции.
+
+      Параметры:
+        fxy -  исходные значения
+    */
     public static double[,] CenteringFunction(double[,] fxy)
     {
       int length = fxy.GetLength(1) - 1;
@@ -113,6 +186,12 @@ namespace FilteringImage.Core
       return fxy;
     }
 
+    /*
+      Получение битовой карты из массива значений.
+
+      Параметры:
+        fxy - исходные значения
+    */
     public static Bitmap GenerateBitmap(double[,] fxy)
     {
       int length = fxy.GetLength(1) - 1;

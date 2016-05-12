@@ -128,11 +128,17 @@ namespace FilteringImage.Core
       return bitmap;
     }
 
+    /*
+      Идеальный фильтр низких частот.
+      
+      Параметры:
+        bitmap - битовая карта исходного изображения
+        cutOffFrequency - частота среза
+    */
     public static FilterResult FilterIdealLowPass(Bitmap bitmap, double cutOffFrequency)
     {
       double[,] fxy = Helpers.GetBitmapFunction(bitmap);
-      fxy = Helpers.CenteringFunction(fxy); //Центрируем функцию
-
+      fxy = Helpers.CenteringFunction(fxy);
       FourierResult[] dft = Fourier.DFT2D(fxy);
 
       int m = fxy.GetLength(1);
@@ -143,6 +149,7 @@ namespace FilteringImage.Core
       byte h;
       double energyBefore = 0;
       double energyAfter = 0;
+      double[,] filterSpectrum = new double[n, m];
 
       for(int y = 0; y <= height; y++)
       {
@@ -154,6 +161,7 @@ namespace FilteringImage.Core
           dft[y].Re[x] *= h;
           dft[y].Im[x] *= h;
           energyAfter += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          filterSpectrum[y, x] = h;
         }
       }
 
@@ -163,10 +171,18 @@ namespace FilteringImage.Core
       FilterResult result = new FilterResult();
       result.Bitmap = Helpers.GenerateBitmap(fxy);
       result.Energy = Math.Round(energyAfter / energyBefore * 100, 2);
+      result.FilterSpectrum = Helpers.GetProportionalImage(filterSpectrum);
 
       return result;
     }
 
+    /*
+      Гауссов фильтр низких частот.
+
+      Параметры:
+        bitmap - битовая карта исходного изображения
+        cutOffFrequency - частота среза
+    */
     public static FilterResult FilterGaussLowPass(Bitmap bitmap, double cutOffFrequency)
     {
       double[,] fxy = Helpers.GetBitmapFunction(bitmap);
@@ -182,6 +198,7 @@ namespace FilteringImage.Core
       double h;
       double energyBefore = 0;
       double energyAfter = 0;
+      double[,] filterSpectrum = new double[n, m];
 
       for(int y = 0; y <= height; y++)
       {
@@ -193,6 +210,7 @@ namespace FilteringImage.Core
           dft[y].Re[x] *= h;
           dft[y].Im[x] *= h;
           energyAfter += Math.Pow(dft[y].Re[x], 2) + Math.Pow(dft[y].Im[x], 2);
+          filterSpectrum[y, x] = h;
         }
       }
 
@@ -202,6 +220,7 @@ namespace FilteringImage.Core
       FilterResult result = new FilterResult();
       result.Bitmap = Helpers.GenerateBitmap(fxy);
       result.Energy = Math.Round(energyAfter / energyBefore * 100, 2);
+      result.FilterSpectrum = Helpers.GetProportionalImage(filterSpectrum);
 
       return result;
     }

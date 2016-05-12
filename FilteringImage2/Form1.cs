@@ -32,11 +32,11 @@ namespace FilteringImage2
         sourceBitmap = new Bitmap(sourceImage.Image);
         resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
         resultImgSpectrum.Image = null;
+        imgSpectrumFilter.Image = null;
         btnSaveImage.Enabled = true;
         btnResetImage.Enabled = true;
         grboxFiltering.Enabled = true;
         DrowSourceSpectrum();
-        DrowChartSpectrum();
       }
     }
 
@@ -59,6 +59,7 @@ namespace FilteringImage2
     {
       resultImage.Image = Helpers.GetImageInColorScale(new Bitmap(sourceBitmap));
       resultImgSpectrum.Image = null;
+      imgSpectrumFilter.Image = null;
       lblResultImageEnergy.Text = "null";
     }
 
@@ -67,6 +68,7 @@ namespace FilteringImage2
     {
       FilterResult fr = Filter.FilterIdealLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
       resultImage.Image = fr.Bitmap;
+      imgSpectrumFilter.Image = fr.FilterSpectrum;
       lblResultImageEnergy.Text = Convert.ToString(fr.Energy);
       DrowFilteredImageSpectrum();
     }
@@ -76,6 +78,7 @@ namespace FilteringImage2
     {
       FilterResult fr = Filter.FilterGaussLowPass(new Bitmap(resultImage.Image), GetCurrentCutOffFrequency());
       resultImage.Image = fr.Bitmap;
+      imgSpectrumFilter.Image = fr.FilterSpectrum;
       lblResultImageEnergy.Text = Convert.ToString(fr.Energy);
       DrowFilteredImageSpectrum();
     }
@@ -84,55 +87,6 @@ namespace FilteringImage2
     private void DrowSourceSpectrum()
     {
       srcImgSpectrum.Image = Helpers.GetImageSpectrum(new Bitmap(sourceBitmap));
-    }
-
-    private void DrowChartSpectrum()
-    {
-      int length = sourceBitmap.Width;
-      int height = sourceBitmap.Height;
-      double[,] fxy = Helpers.GetBitmapFunction(new Bitmap(sourceBitmap));
-      fxy = Helpers.CenteringFunction(fxy);
-      FourierResult[] fr = Fourier.DFT2D(fxy);
-
-      #region Инициализация графика
-
-      chart1.Series.Clear();
-      Series s = chart1.Series.Add("Спектр");
-      chart1.Series[0].ChartType = SeriesChartType.Spline;
-      chart1.Series[0].BorderWidth = 3;
-
-      #endregion
-
-      #region Нахождение минимального и максимального значений, логарифмирование
-
-      int MIN_COLOR = 0;
-      int MAX_COLOR = 255;
-      double min = 0;
-      double max = 0;
-      double tempValue;
-      for(int i = 0; i < height; i++)
-      {
-        for(int j = 0; j < length; j++)
-        {
-          tempValue = fr[i].Spectrum[j];
-          tempValue = tempValue > 0 ? Math.Log10(tempValue) : 0;
-          if(tempValue < min) min = tempValue;
-          if(tempValue > max) max = tempValue;
-          fr[i].Spectrum[j] = tempValue;
-        }
-      }
-
-      #endregion
-
-      #region Вывод графика спектра
-
-      int center = height / 2;
-      for (int i = 0; i <= length - 1; i++)
-      {
-        s.Points.AddXY(i, (byte)Helpers.GetProportionalValue(fr[center].Spectrum[i], min, max, MIN_COLOR, MAX_COLOR));
-      }
-
-      #endregion
     }
 
     //Отрисовка спектра отфильтрованного изображения
@@ -144,15 +98,13 @@ namespace FilteringImage2
     //Получение введенной частоты среза
     private double GetCurrentCutOffFrequency()
     {
-      return Convert.ToDouble(numCutOffFrequency.Value);
+      if (!(numCutOffFrequency.Value <= 0))
+        return Convert.ToDouble(numCutOffFrequency.Value);
+
+      return 0.001;
     }
 
     private void grboxFiltering_Enter(object sender, EventArgs e)
-    {
-
-    }
-
-    private void label9_Click(object sender, EventArgs e)
     {
 
     }
