@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace FilteringImage.Core
 {
@@ -23,21 +24,22 @@ namespace FilteringImage.Core
           {
             int pointsConunt = Convert.ToInt32(sr.ReadLine());
             int projectionsCount = Convert.ToInt32(sr.ReadLine());
-            int angularStep = Convert.ToInt32(sr.ReadLine());
+            double angularStep = double.Parse(sr.ReadLine().Replace('.', ','));
             result = new Projection[projectionsCount]; //Инициализируем результат
 
             for(int i = 0; i < projectionsCount; i++)
             {
               sr.ReadLine(); //Читаем значение угла
+
               string stringValues = sr.ReadLine(); //Читаем строку значений
               string[] arrayValues = stringValues.Split(' '); //Получаем массив значений в стоковом формате
 
-              result[i].Angle = i;
               result[i] = new Projection(angularStep * i, pointsConunt);
 
               for(int j = 0; j < pointsConunt; j++)
               {
-                result[i].Data[j] = double.Parse(arrayValues[j]);
+                string temp = arrayValues[j];
+                result[i].Data[j] = double.Parse(arrayValues[j].Replace('.', ','), NumberStyles.Any);
               }
             }
           }

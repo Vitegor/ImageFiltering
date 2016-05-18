@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FilteringImage.Core;
 
 namespace FilteringImage3
 {
@@ -16,6 +17,17 @@ namespace FilteringImage3
     {
       InitializeComponent();
 
+    }
+
+    private void btnRun_Click(object sender, EventArgs e)
+    {
+      Projection[] data = File.GetProjections();
+
+      foreach(Projection proj in data)
+      {
+        foreach(double value in proj.Data)
+          txbOutput.AppendText(String.Format("{0} \n", value));
+      }
     }
   }
 }
