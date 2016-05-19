@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Imaging;
 using FilteringImage.Core;
 
 namespace FilteringImage3
@@ -19,20 +20,44 @@ namespace FilteringImage3
 
     }
 
+    //Получение данных из файла
     private void btnRun_Click(object sender, EventArgs e)
     {
       Projections data = File.GetProjections();
       int pointsCount = data.PointsCount;
       double[,] fxy = Imaging.reverseProjection(data);
-      imgResult.Image = Helpers.GenerateBitmap(fxy);
+      imgResult.Image = Helpers.GetProportionalImage(fxy);
+    }
 
-      //for(int i = 0; i < pointsCount; i++)
-      //{
-      //  for(int j = 0; j < pointsCount; j++)
-      //  {
-      //    txbOutput.AppendText(fxy[i, j].ToString());
-      //  }
-      //}
+    //Применение фильтра
+    private void btnApplyFilter_Click(object sender, EventArgs e)
+    {
+      FilterResult fr = Filter.FilterGaussLowPass(new Bitmap(imgResult.Image), GetCurrentCutOffFrequency());
+      imgResult.Image = fr.Bitmap;
+    }
+
+    //Сохранение изображения
+    private void btnSaveImage_Click(object sender, EventArgs e)
+    {
+      if(imgResult.Image != null)
+      {
+        saveImage.DefaultExt = ImageFormatSettings.ExtensionForSave;
+        saveImage.Filter = ImageFormatSettings.ExtensionsPatternsForOpen;
+
+        if(saveImage.ShowDialog() == DialogResult.OK)
+        {
+          imgResult.Image.Save(saveImage.FileName, ImageFormat.Bmp);
+        }
+      }
+    }
+
+    //Получение введенной частоты среза
+    private double GetCurrentCutOffFrequency()
+    {
+      if(!(numCutOffFrequency.Value <= 0))
+        return Convert.ToDouble(numCutOffFrequency.Value);
+
+      return 0.001;
     }
   }
 }
