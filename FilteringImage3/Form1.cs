@@ -21,8 +21,18 @@ namespace FilteringImage3
 
     private void btnRun_Click(object sender, EventArgs e)
     {
-      Projection[] data = File.GetProjections();
-      double[,] fxy = reverseProjection();
+      Projections data = File.GetProjections();
+      int pointsCount = data.PointsCount;
+      double[,] fxy = Imaging.reverseProjection(data);
+      imgResult.Image = Helpers.GenerateBitmap(fxy);
+
+      //for(int i = 0; i < pointsCount; i++)
+      //{
+      //  for(int j = 0; j < pointsCount; j++)
+      //  {
+      //    txbOutput.AppendText(fxy[i, j].ToString());
+      //  }
+      //}
     }
   }
 }

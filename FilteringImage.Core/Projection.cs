@@ -1,15 +1,19 @@
 ﻿namespace FilteringImage.Core
 {
   //Структура для хранения значений проекций
-  public struct Projection
+  public struct Projections
   {
-    public Projection(double angle, int length)
+    public Projections(int pointsCount, int projectionsCount, double angularStep, int length)
     {
-      Angle = angle;
+      PointsCount = pointsCount;
+      ProjectionsCount = projectionsCount;
+      AngularStep = angularStep;
       Data = new double[length];
     }
 
-    public double Angle;
+    public int PointsCount;
+    public int ProjectionsCount;
+    public double AngularStep;
     public double[] Data;
   }
 }

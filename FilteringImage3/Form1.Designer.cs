@@ -37,10 +37,14 @@
       // 
       // imgResult
       // 
+      this.imgResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.imgResult.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.imgResult.Location = new System.Drawing.Point(12, 12);
       this.imgResult.Name = "imgResult";
       this.imgResult.Size = new System.Drawing.Size(437, 345);
+      this.imgResult.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.imgResult.TabIndex = 0;
       this.imgResult.TabStop = false;
       // 

@@ -10,11 +10,11 @@ namespace FilteringImage.Core
 {
   public static class File
   {
-    public static Projection[] GetProjections()
+    public static Projections GetProjections()
     {
       const string PATH_TO_FILE = @"C:\data.txt";
       const string START_OF_DATA = "data";
-      Projection[] result = new Projection[1];
+      Projections result = new Projections();
 
       try
       {
@@ -22,24 +22,21 @@ namespace FilteringImage.Core
         {
           if (sr.ReadLine() == START_OF_DATA)
           {
-            int pointsConunt = Convert.ToInt32(sr.ReadLine());
+            
+            int pointsCount = Convert.ToInt32(sr.ReadLine());
             int projectionsCount = Convert.ToInt32(sr.ReadLine());
             double angularStep = double.Parse(sr.ReadLine().Replace('.', ','));
-            result = new Projection[projectionsCount]; //Инициализируем результат
+            result = new Projections(pointsCount, projectionsCount, angularStep, pointsCount * projectionsCount);
 
             for(int i = 0; i < projectionsCount; i++)
             {
-              string temp1 = sr.ReadLine(); //Читаем значение угла
-
+              sr.ReadLine(); //Пропускаем значение угла
               string stringValues = sr.ReadLine().TrimStart(); //Читаем строку значений, удаляем первый пробел
               string[] arrayValues = stringValues.Split(' '); //Получаем массив значений в стоковом формате
 
-              result[i] = new Projection(angularStep * i, pointsConunt);
-
-              for(int j = 0; j < pointsConunt; j++)
+              for(int j = 0; j < pointsCount; j++)
               {
-                string temp = arrayValues[j];
-                result[i].Data[j] = double.Parse(arrayValues[j].Replace('.', ','), NumberStyles.Any);
+                result.Data[j+i* pointsCount] = double.Parse(arrayValues[j].Replace('.', ','), NumberStyles.Any);
               }
             }
           }
