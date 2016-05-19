@@ -49,6 +49,7 @@
     <Compile Include="FourierResult.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="ImageFormatSettings.cs" />
+    <Compile Include="Imaging.cs" />
     <Compile Include="Noise.cs" />
     <Compile Include="Projection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
