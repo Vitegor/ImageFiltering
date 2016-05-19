@@ -29,9 +29,9 @@ namespace FilteringImage.Core
 
             for(int i = 0; i < projectionsCount; i++)
             {
-              sr.ReadLine(); //Читаем значение угла
+              string temp1 = sr.ReadLine(); //Читаем значение угла
 
-              string stringValues = sr.ReadLine(); //Читаем строку значений
+              string stringValues = sr.ReadLine().TrimStart(); //Читаем строку значений, удаляем первый пробел
               string[] arrayValues = stringValues.Split(' '); //Получаем массив значений в стоковом формате
 
               result[i] = new Projection(angularStep * i, pointsConunt);
