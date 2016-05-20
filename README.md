@@ -13,4 +13,6 @@ FilteringImage2:
 FilteringImage3:
 - Метод обратного проецирования
 
+FilteringImage.Core:
+- Классы с реализацией используемых методов
 
